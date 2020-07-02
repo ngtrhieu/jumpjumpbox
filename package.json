@@ -1,0 +1,31 @@
+{
+  "name": "unity3d",
+  "version": "0.0.1",
+  "description": "docker images for unity project ci/cd pipeline. supports android/ios.",
+  "author": "ngtrhieu",
+  "license": "MIT",
+  "private": true,
+  "scripts": {
+    "commit": "git-cz",
+    "release": "standard-version"
+  },
+  "devDependencies": {
+    "@commitlint/cli": "^9.0.1",
+    "@commitlint/config-conventional": "^9.0.1",
+    "commitizen": "^4.1.2",
+    "cz-conventional-changelog": "^3.2.0",
+    "firebase-tools": "^8.4.3",
+    "husky": "^4.2.5",
+    "standard-version": "^8.0.0"
+  },
+  "husky": {
+    "hooks": {
+      "commit-msg": "commitlint -E HUSKY_GIT_PARAMS"
+    }
+  },
+  "config": {
+    "commitizen": {
+      "path": "./node_modules/cz-conventional-changelog"
+    }
+  }
+}
