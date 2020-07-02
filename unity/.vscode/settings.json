@@ -1,9 +1,9 @@
-{
+﻿{
   "editor.wordWrap": "wordWrapColumn",
   "files.exclude": {
-    "node_modules": true,
     "**/.DS_Store": true,
     "**/.git": true,
+    "**/.gitignore": true,
     "**/.gitmodules": true,
     "**/*.booproj": true,
     "**/*.pidb": true,
@@ -52,11 +52,5 @@
     "ProjectSettings/": true,
     "temp/": true,
     "Temp/": true
-  },
-  "files.associations": {
-    "Appfile": "ruby",
-    "Fastfile": "ruby",
-    "Pluginfile": "ruby",
-    "*.docker": "dockerfile"
   }
 }

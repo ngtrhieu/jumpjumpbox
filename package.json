@@ -1,13 +1,17 @@
 {
-  "name": "unity3d",
+  "name": "jumpjumpbox",
   "version": "0.0.1",
-  "description": "docker images for unity project ci/cd pipeline. supports android/ios.",
+  "description": "unity project testing ci/cd pipeline with travis-ci",
   "author": "ngtrhieu",
   "license": "MIT",
   "private": true,
   "scripts": {
     "commit": "git-cz",
-    "release": "standard-version"
+    "release": "standard-version",
+    "test": "yarn test:local",
+    "build": "yarn build:local",
+    "test:local": "./scripts/local_test.sh",
+    "build:local": "./scripts/local_build.sh"
   },
   "devDependencies": {
     "@commitlint/cli": "^9.0.1",
