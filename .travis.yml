@@ -10,7 +10,8 @@ services:
 
 before_install:
   # Update apt
-  - sudo apt-get update && apt-get upgrade -y
+  - sudo apt-get update
+  - sudo apt-get upgrade -y
   - sudo apt-get install curl unzip -y
 install:
   # Install aws-cli
