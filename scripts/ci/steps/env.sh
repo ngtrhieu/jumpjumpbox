@@ -1,5 +1,8 @@
 #!/usr/bin/env bash
 
+# Setup environment variables
+# NOTE: need to executre with `source`, i.e: `source ./env.sh`
+
 set -e
 
 # required by fastlane
@@ -26,8 +29,8 @@ else
 fi
 
 # secrets (read from secrets file)
-export UNITY_LICENSE_CONTENT=$(cat ./secrets/Unity_lic.ulf)
-export FIREBASE_CLI_TOKEN=$(cat ./secrets/firebase.token)
+export UNITY_LICENSE_CONTENT=${UNITY_LICENSE_CONTENT:-"$(cat ./secrets/Unity_lic.ulf)"}
+export FIREBASE_CLI_TOKEN=${FIREBASE_CLI_TOKEN:-"$(cat ./secrets/firebase.token)"}
 
 # keystore (with default develop values)
 export ANDROID_KEYSTORE_PASS=${ANDROID_KEYSTORE_PASS:-"password"}

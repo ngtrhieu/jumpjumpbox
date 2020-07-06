@@ -1,6 +1,9 @@
 #!/usr/bin/env bash
 
-set -e  
+# Build unity project into binary
+# (.apk or .aab for Android, XCode project for iOS)
+
+set -e
 
 echo "Building $BUILD_NAME for $BUILD_TARGET"
 mkdir -p $BUILD_PATH

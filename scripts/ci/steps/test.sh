@@ -1,5 +1,8 @@
 !/usr/bin/env bash
 
+# Run Unity tests.
+# TEST_PLATFORM need to be set to either editmode or playmode
+
 set -x
 
 echo "Testing $BUILD_NAME for $TEST_PLATFORM"

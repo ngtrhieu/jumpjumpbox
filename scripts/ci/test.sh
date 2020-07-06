@@ -6,5 +6,5 @@ dir=$(dirname ${BASH_SOURCE})
 
 source $dir/env.sh
 
-$dir/prepare_license.sh
-$dir/run_test.sh
+$dir/steps/prepare_license.sh
+$dir/steps/test.sh

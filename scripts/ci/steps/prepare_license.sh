@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+# Prepare Unity license and Android keystore.
+
 set -e
 mkdir -p /root/.cache/unity3d
 mkdir -p /root/.local/share/unity3d/Unity/
