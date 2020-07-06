@@ -35,7 +35,7 @@ jobs:
         - chmod +x ./scripts/docker_test.sh
         - ./scripts/docker_test.sh
       after_script:
-        - aws s3 cp ./test_results s3://$ARTIFACTS_BUCKET/report_$BUILD_TARGET_$TRAVIS_BUILD_NUMBER --recursive
+        - aws s3 cp ./test_results s3://${ARTIFACTS_BUCKET}/report_${BUILD_TARGET}_${TRAVIS_BUILD_NUMBER} --recursive
     - stage: build
       name: Build Android
       env: BUILD_TARGET=Android IMAGE_NAME=ngtrhieu/unity3d-android
@@ -43,12 +43,12 @@ jobs:
         - chmod +x ./scripts/docker_build.sh
         - ./scripts/docker_build.sh
       after_success:
-        - aws s3 cp ./builds s3://$ARTIFACTS_BUCKET/$BUILD_TARGET_$TRAVIS_BUILD_NUMBER --recursive
+        - aws s3 cp ./builds s3://${ARTIFACTS_BUCKET}/${BUILD_TARGET}_${TRAVIS_BUILD_NUMBER} --recursive
     - stage: deploy
       if: branch = master
       name: Deploy Android binary
       env: BUILD_TARGET=Android IMAGE_NAME=ngtrhieu/unity3d-android
       script:
         - mkdir -p ./builds
-        - aws s3 cp ./builds s3://$ARTIFACTS_BUCKET/$BUILD_TARGET_$TRAVIS_BUILD_NUMBER ./builds --recursive
+        - aws s3 cp s3://${ARTIFACTS_BUCKET}/${BUILD_TARGET}_${TRAVIS_BUILD_NUMBER} ./builds --recursive
         - chmod +x ./scripts/docker_distribute.sh && ./scripts/docker_distribute.sh
