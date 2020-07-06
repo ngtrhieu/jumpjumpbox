@@ -7,53 +7,47 @@ branches:
     - staging
 services:
   - docker
+
+before_install:
+  # Update apt
+  - sudo apt-get update && apt-get upgrade -y
+  - sudo apt-get install curl unzip -y
+install:
+  # Install aws-cli
+  - curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+  - unzip awscliv2.zip
+  - sudo ./aws/install
+  # Setup aws-credentials based on ARTIFACTS_KEY and ARTIFACTS_SECRET
+  - chmod +x ./scripts/utils/aws_credentials.sh
+  - ./scripts/utils/aws_credentials.sh
+before_script:
+  # Decrypt secrets inside ./secrets folder
+  - openssl aes-256-cbc -K $encrypted_dbcbaea3fa1e_key -iv $encrypted_dbcbaea3fa1e_iv -in ./secrets/keystore.keystore.enc -out ./secrets/keystore.keystore -d
+  - openssl aes-256-cbc -K $encrypted_8026183efba4_key -iv $encrypted_8026183efba4_iv -in ./secrets/Unity_lic.ulf.enc -out ./secrets/Unity_lic.ulf -d
+  - openssl aes-256-cbc -K $encrypted_0c8377fdb45e_key -iv $encrypted_0c8377fdb45e_iv -in ./secrets/firebase.token.enc -out ./secrets/firebase.token -d
 jobs:
   include:
     - stage: test
       name: Edit Mode Test
       env: TEST_PLATFORM=editmode IMAGE_NAME=ngtrhieu/unity3d
-      before_script:
-        - openssl aes-256-cbc -K $encrypted_dbcbaea3fa1e_key -iv $encrypted_dbcbaea3fa1e_iv -in ./secrets/keystore.keystore.enc -out ./secrets/keystore.keystore -d
-        - openssl aes-256-cbc -K $encrypted_8026183efba4_key -iv $encrypted_8026183efba4_iv -in ./secrets/Unity_lic.ulf.enc -out ./secrets/Unity_lic.ulf -d
-        - docker pull $IMAGE_NAME
-      script: chmod +x ./scripts/docker_test.sh && ./scripts/docker_test.sh
-      addons:
-        artifacts:
-          region: ap-southeast-1
-          paths:
-            - $(pwd)/test_results
-          target_paths:
-            - /$BUILD_TARGET/report-$TRAVIS_BUILD_NUMBER
+      script:
+        - chmod +x ./scripts/docker_test.sh
+        - ./scripts/docker_test.sh
+      after_script:
+        - aws s3 cp ./test_results s3://$ARTIFACTS_BUCKET/report_$BUILD_TARGET_$TRAVIS_BUILD_NUMBER --recursive
     - stage: build
       name: Build Android
       env: BUILD_TARGET=Android IMAGE_NAME=ngtrhieu/unity3d-android
-      before_script:
-        - openssl aes-256-cbc -K $encrypted_dbcbaea3fa1e_key -iv $encrypted_dbcbaea3fa1e_iv -in ./secrets/keystore.keystore.enc -out ./secrets/keystore.keystore -d
-        - openssl aes-256-cbc -K $encrypted_8026183efba4_key -iv $encrypted_8026183efba4_iv -in ./secrets/Unity_lic.ulf.enc -out ./secrets/Unity_lic.ulf -d
-        - docker pull $IMAGE_NAME
-      script: chmod +x ./scripts/docker_build.sh && ./scripts/docker_build.sh
-      addons:
-        artifacts:
-          region: ap-southeast-1
-          paths:
-            - $(pwd)/builds/
-          target_paths:
-            - /$BUILD_TARGET/build-$TRAVIS_BUILD_NUMBER
+      script:
+        - chmod +x ./scripts/docker_build.sh
+        - ./scripts/docker_build.sh
+      after_success:
+        - aws s3 cp ./builds s3://$ARTIFACTS_BUCKET/$BUILD_TARGET_$TRAVIS_BUILD_NUMBER --recursive
     - stage: deploy
       if: branch = master
       name: Deploy Android binary
       env: BUILD_TARGET=Android IMAGE_NAME=ngtrhieu/unity3d-android
-      before_install:
-        - apt-get update && apt-get upgrade -y
-        - sudo apt-get install curl unzip -y
-      install:
-        - curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
-        - unzip awscliv2.zip
-        - sudo ./aws/install
-        - chmod +x ./scripts/utils/aws_credentials.sh && ./scripts/utils/aws_credentials.sh
-      before_script:
-        - openssl aes-256-cbc -K $encrypted_0c8377fdb45e_key -iv $encrypted_0c8377fdb45e_iv -in ./secrets/firebase.token.enc -out ./secrets/firebase.token -d
-        - docker pull $IMAGE_NAME
+      script:
         - mkdir -p ./builds
-        - aws s3 cp s3://$ARTIFACTS_BUCKET/$BUILD_TARGET/build-$TRAVIS_BUILD_NUMBER ./builds --recursive
-      script: chmod +x ./scripts/docker_distribute.sh && ./scripts/docker_distribute.sh
+        - aws s3 cp ./builds s3://$ARTIFACTS_BUCKET/$BUILD_TARGET_$TRAVIS_BUILD_NUMBER ./builds --recursive
+        - chmod +x ./scripts/docker_distribute.sh && ./scripts/docker_distribute.sh
