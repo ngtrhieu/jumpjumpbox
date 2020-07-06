@@ -1,0 +1,57 @@
+language: shell
+branches:
+  only:
+    - master
+    - staging
+services:
+  - docker
+jobs:
+  include:
+    - stage: test
+      name: Edit Mode Test
+      env: TEST_PLATFORM=editmode IMAGE_NAME=ngtrhieu/unity3d
+      before_script:
+        - docker pull $IMAGE_NAME
+      script: chmod +x ./scripts/docker_test.sh && ./scripts/docker_test.sh
+      addons:
+        artifacts:
+          region: ap-southeast-1
+          paths:
+            - $(pwd)/test_results
+          target_paths:
+            - /$BUILD_TARGET/report-$TRAVIS_BUILD_NUMBER
+    - stage: build
+      name: Build Android
+      env: BUILD_TARGET=Android IMAGE_NAME=ngtrhieu/unity3d-android
+      before_script:
+        - echo $ANDROID_KEYSTORE_BASE64 | base64 --decode > /projects/secrets/keystore.keystore
+        - echo $FIREBASE_CLI_TOKEN_BASE64 | base64 --decode > /projects/secrets/firebase.token
+        - echo $UNITY_LICENSE_CONTENT_BASE64 | base64 --code > /projects/secrets/Unity_lic.ulf
+        - docker pull $IMAGE_NAME
+      script: chmod +x ./scripts/docker_build.sh && ./scripts/docker_build.sh
+      addons:
+        artifacts:
+          region: ap-southeast-1
+          paths:
+            - $(pwd)/builds/
+          target_paths:
+            - /$BUILD_TARGET/build-$TRAVIS_BUILD_NUMBER
+    - stage: deploy
+      if: branch = master
+      name: Deploy Android binary
+      description: Deploy Android binary to Firebase App Distribution if this is master build.
+      env: BUILD_TARGET=Android IMAGE_NAME=ngtrhieu/unity3d-android
+      before_install:
+        - apt-get update && apt-get upgrade -y
+        - sudo apt-get install curl unzip -y
+      install:
+        - curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+        - unzip awscliv2.zip
+        - sudo ./aws/install
+        - chmod +x ./scripts/utils/aws_credentials.sh && ./scripts/utils/aws_credentials.sh
+      before_script:
+        - echo $FIREBASE_CLI_TOKEN_BASE64 | base64 --decode > /projects/secrets/firebase.token
+        - docker pull $IMAGE_NAME
+        - mkdir -p ./builds
+        - aws s3 cp s3://$ARTIFACTS_BUCKET/$BUILD_TARGET/build-$TRAVIS_BUILD_NUMBER ./builds --recursive
+      script: chmod +x ./scripts/docker_distribute.sh && ./scripts/docker_distribute.sh
