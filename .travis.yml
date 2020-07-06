@@ -1,4 +1,6 @@
 language: shell
+os: linux
+dist: xenial
 branches:
   only:
     - master
@@ -11,6 +13,8 @@ jobs:
       name: Edit Mode Test
       env: TEST_PLATFORM=editmode IMAGE_NAME=ngtrhieu/unity3d
       before_script:
+        - openssl aes-256-cbc -K $encrypted_dbcbaea3fa1e_key -iv $encrypted_dbcbaea3fa1e_iv -in ./secrets/keystore.keystore.enc -out ./secrets/keystore.keystore -d
+        - openssl aes-256-cbc -K $encrypted_8026183efba4_key -iv $encrypted_8026183efba4_iv -in ./secrets/Unity_lic.ulf.enc -out ./secrets/Unity_lic.ulf -d
         - docker pull $IMAGE_NAME
       script: chmod +x ./scripts/docker_test.sh && ./scripts/docker_test.sh
       addons:
@@ -24,9 +28,8 @@ jobs:
       name: Build Android
       env: BUILD_TARGET=Android IMAGE_NAME=ngtrhieu/unity3d-android
       before_script:
-        - echo $ANDROID_KEYSTORE_BASE64 | base64 --decode > /projects/secrets/keystore.keystore
-        - echo $FIREBASE_CLI_TOKEN_BASE64 | base64 --decode > /projects/secrets/firebase.token
-        - echo $UNITY_LICENSE_CONTENT_BASE64 | base64 --code > /projects/secrets/Unity_lic.ulf
+        - openssl aes-256-cbc -K $encrypted_dbcbaea3fa1e_key -iv $encrypted_dbcbaea3fa1e_iv -in ./secrets/keystore.keystore.enc -out ./secrets/keystore.keystore -d
+        - openssl aes-256-cbc -K $encrypted_8026183efba4_key -iv $encrypted_8026183efba4_iv -in ./secrets/Unity_lic.ulf.enc -out ./secrets/Unity_lic.ulf -d
         - docker pull $IMAGE_NAME
       script: chmod +x ./scripts/docker_build.sh && ./scripts/docker_build.sh
       addons:
@@ -39,7 +42,6 @@ jobs:
     - stage: deploy
       if: branch = master
       name: Deploy Android binary
-      description: Deploy Android binary to Firebase App Distribution if this is master build.
       env: BUILD_TARGET=Android IMAGE_NAME=ngtrhieu/unity3d-android
       before_install:
         - apt-get update && apt-get upgrade -y
@@ -50,7 +52,7 @@ jobs:
         - sudo ./aws/install
         - chmod +x ./scripts/utils/aws_credentials.sh && ./scripts/utils/aws_credentials.sh
       before_script:
-        - echo $FIREBASE_CLI_TOKEN_BASE64 | base64 --decode > /projects/secrets/firebase.token
+        - openssl aes-256-cbc -K $encrypted_0c8377fdb45e_key -iv $encrypted_0c8377fdb45e_iv -in ./secrets/firebase.token.enc -out ./secrets/firebase.token -d
         - docker pull $IMAGE_NAME
         - mkdir -p ./builds
         - aws s3 cp s3://$ARTIFACTS_BUCKET/$BUILD_TARGET/build-$TRAVIS_BUILD_NUMBER ./builds --recursive
