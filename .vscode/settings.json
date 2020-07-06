@@ -1,5 +1,7 @@
 {
   "editor.wordWrap": "wordWrapColumn",
+  "editor.tabSize": 2,
+  "editor.insertSpaces": true,
   "files.exclude": {
     "node_modules": true,
     "**/.DS_Store": true,

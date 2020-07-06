@@ -5,9 +5,9 @@ using UnityEngine.AddressableAssets;
 
 public class AddressableLoader : MonoBehaviour {
 
-    public AssetReferenceGameObject refGameObject;
+  public AssetReferenceGameObject refGameObject;
 
-    void Start () {
-        refGameObject.InstantiateAsync (transform.position, transform.rotation);
-    }
+  void Start() {
+    refGameObject.InstantiateAsync(transform.position, transform.rotation);
+  }
 }
