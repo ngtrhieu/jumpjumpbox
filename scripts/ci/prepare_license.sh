@@ -10,8 +10,11 @@ if [ $UPPERCASE_BUILD_TARGET = "ANDROID" ]; then
     if [ -n $ANDROID_KEYSTORE_BASE64 ]; then
         echo '$ANDROID_KEYSTORE_BASE64 found, decoding content into keystore.keystore'
         echo $ANDROID_KEYSTORE_BASE64 | base64 --decode >keystore.keystore
+    elif [ -f "$(pwd)/secrets/keystore.keystore" ]; then
+        echo 'Keystore found inside secrets folder, copy to root folder.'
+        cat $(pwd)/secrets/keystore.keystore >keystore.keystore
     else
-        echo '$ANDROID_KEYSTORE_BASE64'" env var not found, building with Unity's default debug keystore"
+        echo 'ANDROID_KEYSTORE'" env var not found, building with Unity's default debug keystore"
     fi
 fi
 

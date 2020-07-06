@@ -25,6 +25,11 @@ else
     export ANDROID_BUILD_PATH=$BUILD_PATH$BUILD_NAME.aab
 fi
 
-# secrets
+# secrets (read from secrets file)
 export UNITY_LICENSE_CONTENT=$(cat ./secrets/Unity_lic.ulf)
 export FIREBASE_CLI_TOKEN=$(cat ./secrets/firebase.token)
+
+# keystore (with default develop values)
+export ANDROID_KEYSTORE_PASS=${ANDROID_KEYSTORE_PASS:-"password"}
+export ANDROID_KEY_ALIAS_NAME=${ANDROID_KEY_ALIAS_NAME:-"user"}
+export ANDROID_KEY_ALIAS_PASS=${ANDROID_KEY_ALIAS_PASS:-"password"}
