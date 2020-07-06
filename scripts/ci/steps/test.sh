@@ -1,4 +1,4 @@
-!/usr/bin/env bash
+#!/usr/bin/env bash
 
 # Run Unity tests.
 # TEST_PLATFORM need to be set to either editmode or playmode
