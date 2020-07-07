@@ -1,6 +1,6 @@
 {
   "name": "jumpjumpbox",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "unity project testing ci/cd pipeline with travis-ci",
   "author": "ngtrhieu",
   "license": "MIT",
