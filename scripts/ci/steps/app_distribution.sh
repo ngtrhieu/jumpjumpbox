@@ -5,8 +5,5 @@
 set -e
 
 echo "Distributing $BUILD_NAME..."
-
-bundle install && yarn install
 fastlane distribute
-
 echo "$BUILD_NAME distribution completed."

@@ -7,8 +7,6 @@ using UnityEngine;
 
 static class BuildContentCommand {
 
-  private const string ADDRESSABLE_PROFILE = "ADDRESSABLE_PROFILE";
-
   static string GetArgument(string name) {
     string[] args = Environment.GetCommandLineArgs();
     for (int i = 0; i < args.Length; i++) {
@@ -31,13 +29,19 @@ static class BuildContentCommand {
 
     var addressableAssetSettings = AddressableAssetSettingsDefaultObject.Settings;
 
+    var profileNames = addressableAssetSettings.profileSettings.GetAllProfileNames();
+    for (var i = 0; i < profileNames.Count; ++i) {
+      Debug.Log(profileNames[i]);
+    }
+
     // Check that the profile name exists
     if (!addressableAssetSettings.profileSettings.GetAllProfileNames().Contains(profileName)) {
       throw new Exception(string.Format("Profile {0} not found", profileName));
     }
 
-    if (addressableAssetSettings.activeProfileId != profileName) {
-      addressableAssetSettings.activeProfileId = profileName;
+    var profileId = addressableAssetSettings.profileSettings.GetProfileId(profileName);
+    if (addressableAssetSettings.activeProfileId != profileId) {
+      addressableAssetSettings.activeProfileId = profileId;
       EditorUtility.SetDirty(AddressableAssetSettingsDefaultObject.Settings);
     }
 
@@ -48,9 +52,9 @@ static class BuildContentCommand {
     Console.WriteLine(":: Prebuild player content");
     CleanPlayerContent();
 
-    var profileName = GetArgument(ADDRESSABLE_PROFILE);
+    var profileName = GetArgument("addressableProfile");
     SetActiveProfile(profileName);
-    Console.WriteLine(":: DOne prebuild player content");
+    Console.WriteLine(":: Done prebuild player content");
 
     Console.WriteLine(":: Build player content");
     AddressableAssetSettings.BuildPlayerContent();
