@@ -18,7 +18,6 @@ before_install:
   - if [[ -d $HOME/docker ]]; then ls $HOME/docker/*.tar.gz | xargs -I {file} sh -c "zcat {file} | docker load"; fi
   # Update apt
   - sudo apt-get update
-  - sudo apt-get upgrade -y
   - sudo apt-get install curl unzip -y
 install:
   # Install aws-cli
