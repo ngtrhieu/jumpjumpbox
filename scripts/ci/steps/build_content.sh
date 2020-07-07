@@ -31,6 +31,9 @@ else
   echo "Unexpected exit code $UNITY_EXIT_CODE"
 fi
 
+echo "Checking content folder $PROJECT_PATH/ServerData..."
 ls -la $PROJECT_PATH/ServerData
-[ -n "$(ls -A $PROJECT_PATH/ServerData)" ]
-# fail job if the build folder is empty
+if [ -n "$(ls -A $PROJECT_PATH/ServerData)" ]; then
+  echo "Content folder empty. Exit 1"
+  exit 1 # fail job if build folder is empty
+fi

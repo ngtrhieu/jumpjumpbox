@@ -31,5 +31,9 @@ else
   echo "Unexpected exit code $UNITY_EXIT_CODE"
 fi
 
+echo "Checking build path $BUILD_PATH..."
 ls -la $BUILD_PATH
-[ -n "$(ls -A $BUILD_PATH)" ] # fail job if build folder is empty
+if [ -n "$(ls -A $BUILD_PATH)" ]; then
+  echo "Build folder empty. Exit 1"
+  exit 1 # fail job if build folder is empty
+fi
