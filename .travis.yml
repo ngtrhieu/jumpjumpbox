@@ -43,7 +43,7 @@ jobs:
       env: TEST_PLATFORM=editmode IMAGE_NAME=ngtrhieu/unity3d
       script:
         - chmod +x ./scripts/docker_test.sh
-        - docker pull IMAGE_NAME=ngtrhieu/unity3d
+        - docker pull ngtrhieu/unity3d
         # - ./scripts/docker_test.sh
       after_script:
         - aws s3 cp ./test_results s3://${BUILD_BUCKET}/report_${BUILD_TARGET}_${TRAVIS_BUILD_NUMBER} --recursive
@@ -52,7 +52,7 @@ jobs:
       env: BUILD_TARGET=Android IMAGE_NAME=ngtrhieu/unity3d-android
       script:
         - chmod +x ./scripts/docker_build.sh
-        - docker pull IMAGE_NAME=ngtrhieu/unity3d-android
+        - docker pull ngtrhieu/unity3d-android
         # - ./scripts/docker_build.sh
       after_success:
         - aws s3 cp ./builds s3://${BUILD_BUCKET}/${BUILD_TARGET}_${TRAVIS_BUILD_NUMBER} --recursive
