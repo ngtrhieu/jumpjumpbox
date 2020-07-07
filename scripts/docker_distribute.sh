@@ -9,7 +9,7 @@ docker run \
   -e TEST_PLATFORM \
   -e UNITY_USERNAME \
   -e UNITY_PASSWORD \
-  -e GIT_BRANCH \
+  -e TRAVIS_BRANCH \
   -w /project/ \
   -v $(pwd):/project/ \
   $IMAGE_NAME \
