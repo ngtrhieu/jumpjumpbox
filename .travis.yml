@@ -35,9 +35,7 @@ before_script:
   - openssl aes-256-cbc -K $encrypted_0c8377fdb45e_key -iv $encrypted_0c8377fdb45e_iv -in ./secrets/firebase.token.enc -out ./secrets/firebase.token -d
 before_cache:
   - mkdir -p $HOME/docker
-  - >
-  docker images -a --filter='dangling=false' --format '{{.Repository}}:{{.Tag}} {{.ID}}'
-  | xargs -n 2 -t sh -c 'test -e $HOME/docker/$1.tar.gz || docker save $0 | gzip -2 > $HOME/docker/$1.tar.gz'
+  - docker images -a --filter='dangling=false' --format '{{.Repository}}:{{.Tag}} {{.ID}}' | xargs -n 2 -t sh -c 'test -e $HOME/docker/$1.tar.gz || docker save $0 | gzip -2 > $HOME/docker/$1.tar.gz'
 jobs:
   include:
     - stage: test
