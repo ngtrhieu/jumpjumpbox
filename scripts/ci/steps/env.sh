@@ -39,7 +39,7 @@ fi
 ###
 
 # if not set, use GIT_BRANCH (should be set by TravisCI)
-export UNITY_BUILD_PROFILE=${UNITY_BUILD_PROFILE:-${GIT_BRANCH:-"master"}}
+export UNITY_BUILD_PROFILE=${UNITY_BUILD_PROFILE:-$GIT_BRANCH}
 
 # (required PROJECT_PATH to be set first)
 export UNITY_PROJECT_VERSION=${UNITY_PROJECT_VERSION:-"$(node $(pwd)/scripts/utils/get_project_version.js)"}

@@ -14,6 +14,7 @@ docker run \
     -e ANDROID_KEYSTORE_PASS \
     -e ANDROID_KEY_ALIAS_NAME \
     -e ANDROID_KEY_ALIAS_PASS \
+    -e GIT_BRANCH \
     -w /project/ \
     -v $(pwd):/project/ \
     $IMAGE_NAME \
