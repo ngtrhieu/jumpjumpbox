@@ -34,18 +34,18 @@ before_script:
   - openssl aes-256-cbc -K $encrypted_0c8377fdb45e_key -iv $encrypted_0c8377fdb45e_iv -in ./secrets/firebase.token.enc -out ./secrets/firebase.token -d
 before_cache:
   - mkdir -p $HOME/docker
-  - docker images -a --filter='dangling=false' --format '{{.Repository}}:{{.Tag}} {{.ID}}' | xargs -n 2 -t bash -c 'test -e $HOME/docker/$1.tar.gz || docker save $0 | gzip -2 > $HOME/docker/$1.tar.gz'
+  - travis_wait 30 docker images -a --filter='dangling=false' --format '{{.Repository}}:{{.Tag}} {{.ID}}' | xargs -n 2 -t bash -c 'test -e $HOME/docker/$1.tar.gz || docker save $0 | gzip -2 > $HOME/docker/$1.tar.gz'
 jobs:
   include:
-    - stage: test
-      name: Edit Mode Test
-      env: TEST_PLATFORM=editmode IMAGE_NAME=ngtrhieu/unity3d
-      script:
-        - chmod +x ./scripts/docker_test.sh
-        - docker pull ngtrhieu/unity3d
-        # - ./scripts/docker_test.sh
-      after_script:
-        - aws s3 cp ./test_results s3://${BUILD_BUCKET}/report_${BUILD_TARGET}_${TRAVIS_BUILD_NUMBER} --recursive
+    # - stage: test
+    #   name: Edit Mode Test
+    #   env: TEST_PLATFORM=editmode IMAGE_NAME=ngtrhieu/unity3d
+    #   script:
+    #     - chmod +x ./scripts/docker_test.sh
+    #     - docker pull ngtrhieu/unity3d
+    #     # - ./scripts/docker_test.sh
+    #   after_script:
+    #     - aws s3 cp ./test_results s3://${BUILD_BUCKET}/report_${BUILD_TARGET}_${TRAVIS_BUILD_NUMBER} --recursive
     - stage: build
       name: Build Android
       env: BUILD_TARGET=Android IMAGE_NAME=ngtrhieu/unity3d-android
@@ -56,11 +56,11 @@ jobs:
       after_success:
         - aws s3 cp ./builds s3://${BUILD_BUCKET}/${BUILD_TARGET}_${TRAVIS_BUILD_NUMBER} --recursive
         - aws s3 cp ./unity/ServerData s3://${CONTENT_BUCKET} --recursive
-    - stage: deploy
-      if: branch = master
-      name: Deploy Android
-      env: BUILD_TARGET=Android IMAGE_NAME=ngtrhieu/unity3d-android
-      script:
-        # - mkdir -p ./builds
-        # - aws s3 cp s3://${BUILD_BUCKET}/${BUILD_TARGET}_${TRAVIS_BUILD_NUMBER} ./builds --recursive
-        # - chmod +x ./scripts/docker_distribute.sh && ./scripts/docker_distribute.sh
+    # - stage: deploy
+    #   if: branch = master
+    #   name: Deploy Android
+    #   env: BUILD_TARGET=Android IMAGE_NAME=ngtrhieu/unity3d-android
+    #   script:
+    #     # - mkdir -p ./builds
+    #     # - aws s3 cp s3://${BUILD_BUCKET}/${BUILD_TARGET}_${TRAVIS_BUILD_NUMBER} ./builds --recursive
+    #     # - chmod +x ./scripts/docker_distribute.sh && ./scripts/docker_distribute.sh
