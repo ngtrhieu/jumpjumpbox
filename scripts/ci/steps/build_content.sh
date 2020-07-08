@@ -5,6 +5,8 @@
 
 set -e
 
+echo :: Running step $0
+
 echo "Building content $BUILD_NAME for $BUILD_TARGET"
 
 ${UNITY_EXECUTABLE:-xvfb-run --auto-servernum --server-args='-screen 0 640x480x24' /opt/Unity/Editor/Unity} \
@@ -33,7 +35,9 @@ fi
 
 echo "Checking content folder $PROJECT_PATH/ServerData..."
 ls -la $PROJECT_PATH/ServerData
-if [ -n "$(ls -A $PROJECT_PATH/ServerData)" ]; then
+if [ -z "$(ls -A $PROJECT_PATH/ServerData)" ]; then
   echo "Content folder empty. Exit 1"
   exit 1 # fail job if build folder is empty
 fi
+
+echo :: Step $0 completed

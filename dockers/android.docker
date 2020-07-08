@@ -1,22 +1,7 @@
 # Extend gableroux build image by:
 FROM gableroux/unity3d:2019.4.1f1-android
 
-
-# 1. install ruby and bundler
-RUN apt-get update && apt-get upgrade -y
-RUN apt-get install ruby-full -y
-RUN gem install bundler
-
-# 2. install nodejs v12 and yarn
-RUN apt-get install curl -y
-RUN curl -sL https://deb.nodesource.com/setup_12.x | bash && \
-    apt-get install nodejs -y
-RUN curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add - && \
-    echo "deb https://dl.yarnpkg.com/debian/ stable main" | tee /etc/apt/sources.list.d/yarn.list && \
-    apt-get update && \
-    apt-get install yarn
-
-# 3. adding NDK for app bundle build
+# adding NDK for app bundle build
 ENV ANDROID_NDK_HOME /opt/android-ndk-linux
 ENV ANDROID_NDK_VERSION r16b
 

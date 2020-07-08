@@ -5,6 +5,8 @@
 
 set -e
 
+echo :: Running step $0
+
 echo "Building $BUILD_NAME for $BUILD_TARGET"
 mkdir -p $BUILD_PATH
 
@@ -33,7 +35,9 @@ fi
 
 echo "Checking build path $BUILD_PATH..."
 ls -la $BUILD_PATH
-if [ -n "$(ls -A $BUILD_PATH)" ]; then
+if [ -z "$(ls -A $BUILD_PATH)" ]; then
   echo "Build folder empty. Exit 1"
   exit 1 # fail job if build folder is empty
 fi
+
+echo :: Step $0 completed

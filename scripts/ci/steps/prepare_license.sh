@@ -3,6 +3,9 @@
 # Prepare Unity license and Android keystore.
 
 set -e
+
+echo :: Running step $0
+
 mkdir -p /root/.cache/unity3d
 mkdir -p /root/.local/share/unity3d/Unity/
 
@@ -31,3 +34,5 @@ fi
 
 echo "Writing $LICENSE to license file /root/.local/share/unity3d/Unity/Unity_lic.ulf"
 echo "${!LICENSE}" | tr -d '\r' >/root/.local/share/unity3d/Unity/Unity_lic.ulf
+
+echo :: Step $0 completed

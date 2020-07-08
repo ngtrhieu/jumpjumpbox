@@ -46,4 +46,6 @@ else
 fi
 
 cat $RESULT_PATH/$TEST_PLATFORM-results.xml | grep test-run | grep Passed
+
+echo :: Step $0 completed. exiting $UNITY_EXIT_CODE
 exit $UNITY_EXIT_CODE

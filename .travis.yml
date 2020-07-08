@@ -1,12 +1,16 @@
 language: shell
+
 os: linux
 dist: xenial
+
 branches:
   only:
     - master
     - staging
+
 services:
   - docker
+
 cache:
   bundler: true
   yarn: true
@@ -14,53 +18,76 @@ cache:
   #   - $HOME/docker
 
 before_install:
-  # Save tagged docker images
+  # # Load cached docker images from $HOME/docker
   # - if [[ -d $HOME/docker ]]; then ls $HOME/docker/*.tar.gz | xargs -I {file} sh -c "zcat {file} | docker load"; fi
-  # Update apt
+
+  # Install curl, unzip
   - sudo apt-get update
   - sudo apt-get install curl unzip -y
+
 install:
   # Install aws-cli
   - curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
   - unzip awscliv2.zip
   - sudo ./aws/install
+
   # Setup aws-credentials based on ARTIFACTS_KEY and ARTIFACTS_SECRET
   - chmod +x ./scripts/utils/aws_credentials.sh
   - ./scripts/utils/aws_credentials.sh
+
+  # Install nodejs and yarn
+  - curl -sL https://deb.nodesource.com/setup_12.x | bash
+  - curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add -
+  - echo "deb https://dl.yarnpkg.com/debian/ stable main" | tee /etc/apt/sources.list.d/yarn.list
+  - sudo apt-get install nodejs yarn -y
+
+  # Install ruby bundler
+  - sudo apt-get install ruby-full -y
+  - gem install bundler
+
 before_script:
+  # Install dependencies
+  - yarn install
+  - bundle install
+
   # Decrypt secrets inside ./secrets folder
   - openssl aes-256-cbc -K $encrypted_dbcbaea3fa1e_key -iv $encrypted_dbcbaea3fa1e_iv -in ./secrets/keystore.keystore.enc -out ./secrets/keystore.keystore -d
   - openssl aes-256-cbc -K $encrypted_8026183efba4_key -iv $encrypted_8026183efba4_iv -in ./secrets/Unity_lic.ulf.enc -out ./secrets/Unity_lic.ulf -d
   - openssl aes-256-cbc -K $encrypted_0c8377fdb45e_key -iv $encrypted_0c8377fdb45e_iv -in ./secrets/firebase.token.enc -out ./secrets/firebase.token -d
+
 before_cache:
-  - mkdir -p $HOME/docker
+  # # Save tagged docker images to $HOME/docker folder
+  # - mkdir -p $HOME/docker
   # - docker images -a --filter='dangling=false' --format '{{.Repository}}:{{.Tag}} {{.ID}}' | xargs -n 2 -t bash -c 'test -e $HOME/docker/$1.tar.gz || docker save $0 | gzip -2 > $HOME/docker/$1.tar.gz'
+
 jobs:
   include:
     - stage: test
-      name: Edit Mode Test
+      name: EditMode Test
       env: TEST_PLATFORM=editmode IMAGE_NAME=ngtrhieu/unity3d
       script:
-        - chmod +x ./scripts/docker_test.sh
-        - docker pull ngtrhieu/unity3d
-        # - ./scripts/docker_test.sh
+        - chmod +x ./scripts/ci_test.sh
+        - ./scripts/ci_test.sh
       after_script:
         - aws s3 cp ./test_results s3://${BUILD_BUCKET}/report_${BUILD_TARGET}_${TRAVIS_BUILD_NUMBER} --recursive
+
     - stage: build
       name: Build Android
       env: BUILD_TARGET=Android IMAGE_NAME=ngtrhieu/unity3d-android
       script:
-        - chmod +x ./scripts/docker_build.sh
-        - docker pull ngtrhieu/unity3d-android
-        - ./scripts/docker_build.sh
+        - chmod +x ./scripts/ci_build.sh
+        - ./scripts/ci_build.sh
       after_success:
         - aws s3 cp ./builds s3://${BUILD_BUCKET}/${BUILD_TARGET}_${TRAVIS_BUILD_NUMBER} --recursive
         - aws s3 cp ./unity/ServerData s3://${CONTENT_BUCKET} --recursive
+
     - stage: deploy
       if: branch = master
       name: Deploy Android
       env: BUILD_TARGET=Android IMAGE_NAME=ngtrhieu/unity3d-android
-      script:
+      before_script:
         - mkdir -p ./builds
         - aws s3 cp s3://${BUILD_BUCKET}/${BUILD_TARGET}_${TRAVIS_BUILD_NUMBER} ./builds --recursive
-        - chmod +x ./scripts/docker_distribute.sh && ./scripts/docker_distribute.sh
+      script:
+        - chmod +x ./scripts/ci_distribute.sh
+        - ./scripts/ci_distribute.sh

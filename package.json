@@ -8,10 +8,8 @@
   "scripts": {
     "commit": "git-cz",
     "release": "standard-version",
-    "test": "yarn test:local",
-    "build": "yarn build:local",
-    "test:local": "./scripts/local_test.sh",
-    "build:local": "./scripts/local_build.sh"
+    "test": "./scripts/local_test.sh",
+    "build": "./scripts/local_build.sh"
   },
   "devDependencies": {
     "@commitlint/cli": "^9.0.1",

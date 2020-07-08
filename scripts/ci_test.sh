@@ -2,6 +2,8 @@
 
 set -e
 
+echo :: Running $0
+
 dir=$(dirname ${BASH_SOURCE})
 
 docker run \
@@ -14,3 +16,5 @@ docker run \
   -v $(pwd):/project/ \
   $IMAGE_NAME \
   /bin/bash -c $dir/ci/test.sh
+
+echo :: $0 stopped

@@ -5,6 +5,8 @@
 
 set -e
 
+echo :: Running step $0
+
 ###
 # fastlane
 ###
@@ -59,3 +61,5 @@ export FIREBASE_CLI_TOKEN=${FIREBASE_CLI_TOKEN:-"$(cat ./secrets/firebase.token)
 export ANDROID_KEYSTORE_PASS=${ANDROID_KEYSTORE_PASS:-"password"}
 export ANDROID_KEY_ALIAS_NAME=${ANDROID_KEY_ALIAS_NAME:-"user"}
 export ANDROID_KEY_ALIAS_PASS=${ANDROID_KEY_ALIAS_PASS:-"password"}
+
+echo :: Step $0 completed
