@@ -3,13 +3,17 @@ language: shell
 os: linux
 dist: xenial
 
+# Define stage order
+stages:
+  - test # Run unit tests, make sure all tests passed
+  - build # Build content, apk, xcode proj, ...
+  - ios-build # (ios only) build xcode to iap
+  - deploy # Upload build to app distribution (master) or app store/google play (staging/production)
+
 branches:
   only:
     - master
     - staging
-
-services:
-  - docker
 
 cache:
   bundler: true
@@ -22,8 +26,8 @@ before_install:
   # - if [[ -d $HOME/docker ]]; then ls $HOME/docker/*.tar.gz | xargs -I {file} sh -c "zcat {file} | docker load"; fi
 
   # Install curl, unzip
-  - sudo apt-get update
-  - sudo apt-get install curl unzip -y
+  - [ TRAVIS_OS_NAME = 'linux' ] && sudo apt-get update
+  - [ TRAVIS_OS_NAME = 'linux' ] && sudo apt-get install curl unzip -y
 
 install:
   # Install aws-cli
@@ -36,14 +40,17 @@ install:
   - ./scripts/utils/aws_credentials.sh
 
   # Install nodejs and yarn
-  - curl -sL https://deb.nodesource.com/setup_12.x | sudo bash
-  - curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | sudo apt-key add -
-  - echo "deb https://dl.yarnpkg.com/debian/ stable main" | sudo tee /etc/apt/sources.list.d/yarn.list
-  - sudo apt-get update
-  - sudo apt-get install nodejs yarn -y
+  - >4
+    [ TRAVIS_OS_NAME = 'linux' ] && curl -sL https://deb.nodesource.com/setup_12.x | sudo bash
+    && curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | sudo apt-key add -
+    && echo "deb https://dl.yarnpkg.com/debian/ stable main" | sudo tee /etc/apt/sources.list.d/yarn.list
+    && sudo apt-get update
+    && sudo apt-get install nodejs yarn -y
+  - [ TRAVIS_OS_NAME = 'osx' ] && brew install node yarn
 
   # Install ruby bundler
-  - sudo apt-get install ruby-full -y
+  - [ TRAVIS_OS_NAME = 'linux' ] && sudo apt-get install ruby-full -y
+  - [ TRAVIS_OS_NAME = 'osx' ] && brew install ruby
   - gem install bundler
 
 before_script:
@@ -63,18 +70,34 @@ before_cache:
 
 jobs:
   include:
-    - stage: test
-      name: EditMode Test
-      env: TEST_PLATFORM=editmode IMAGE_NAME=ngtrhieu/unity3d
-      script:
-        - chmod +x ./scripts/ci_test.sh
-        - ./scripts/ci_test.sh
-      after_script:
-        - aws s3 cp ./test_results s3://${BUILD_BUCKET}/report_${BUILD_TARGET}_${TRAVIS_BUILD_NUMBER} --recursive
+    # - stage: test
+    #   services:
+    #     - docker
+    #   name: EditMode Test
+    #   env: TEST_PLATFORM=editmode IMAGE_NAME=ngtrhieu/unity3d
+    #   script:
+    #     - chmod +x ./scripts/ci_test.sh
+    #     - ./scripts/ci_test.sh
+    #   after_script:
+    #     - aws s3 cp ./test_results s3://${BUILD_BUCKET}/report_${BUILD_TARGET}_${TRAVIS_BUILD_NUMBER} --recursive
+
+    # - stage: build
+    #   services:
+    #     - docker
+    #   name: Build Android
+    #   env: BUILD_TARGET=Android IMAGE_NAME=ngtrhieu/unity3d-android
+    #   script:
+    #     - chmod +x ./scripts/ci_build.sh
+    #     - ./scripts/ci_build.sh
+    #   after_success:
+    #     - aws s3 cp ./builds s3://${BUILD_BUCKET}/${BUILD_TARGET}_${TRAVIS_BUILD_NUMBER} --recursive
+    #     - aws s3 cp ./unity/ServerData s3://${CONTENT_BUCKET} --recursive
 
     - stage: build
-      name: Build Android
-      env: BUILD_TARGET=Android IMAGE_NAME=ngtrhieu/unity3d-android
+      services:
+        - docker
+      name: Build XCode project
+      env: BUILD_TARGET=iOS IMAGE_NAME=ngtrhieu/unity3d-ios
       script:
         - chmod +x ./scripts/ci_build.sh
         - ./scripts/ci_build.sh
@@ -82,15 +105,30 @@ jobs:
         - aws s3 cp ./builds s3://${BUILD_BUCKET}/${BUILD_TARGET}_${TRAVIS_BUILD_NUMBER} --recursive
         - aws s3 cp ./unity/ServerData s3://${CONTENT_BUCKET} --recursive
 
-    - stage: deploy
-      if: branch = master
-      name: Deploy Android
-      env: BUILD_TARGET=Android IMAGE_NAME=ngtrhieu/unity3d-android
-      script:
-        # Download build artifact
-        - mkdir -p ./builds
-        - aws s3 cp s3://${BUILD_BUCKET}/${BUILD_TARGET}_${TRAVIS_BUILD_NUMBER} ./builds --recursive
+    - stage: ios-build
+      name: Build iOS
 
-        # Fastlane distribute
-        - chmod +x ./scripts/ci_distribute.sh
-        - ./scripts/ci_distribute.sh
+      # This stage specifically run on osx
+      os: osx
+      language: objective-c
+
+      script:
+        - echo Node $(node --version)
+        - echo Gem $(gem --version)
+        - echo Bundle $(bundle --version)
+        - echo AWS $(aws --version)
+        - aws s3 cp s3://${BUILD_BUCKET}/${BUILD_TARGET}_${TRAVIS_BUILD_NUMBER} ./builds --recursive
+        - echo "ios_build done"
+
+    # - stage: deploy
+    #   if: branch = master
+    #   name: Deploy Android
+    #   env: BUILD_TARGET=Android
+    #   script:
+    #     # Download build artifact
+    #     - mkdir -p ./builds
+    #     - aws s3 cp s3://${BUILD_BUCKET}/${BUILD_TARGET}_${TRAVIS_BUILD_NUMBER} ./builds --recursive
+
+    #     # Fastlane distribute
+    #     - chmod +x ./scripts/ci_distribute.sh
+    #     - ./scripts/ci_distribute.sh
