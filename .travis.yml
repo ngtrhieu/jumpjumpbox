@@ -64,6 +64,12 @@ install:
   - gem install bundler
 
 before_script:
+  # Check
+  - echo Node $(node --version)
+  - echo Gem $(gem --version)
+  - echo Bundle $(bundle --version)
+  - echo AWS $(aws --version)
+
   # Install dependencies
   - yarn install
   - bundle install
@@ -123,10 +129,6 @@ jobs:
       language: objective-c
 
       script:
-        - echo Node $(node --version)
-        - echo Gem $(gem --version)
-        - echo Bundle $(bundle --version)
-        - echo AWS $(aws --version)
         - aws s3 cp s3://${BUILD_BUCKET}/${BUILD_TARGET}_${TRAVIS_BUILD_NUMBER} ./builds --recursive
         - echo "ios_build done"
     # - stage: deploy
