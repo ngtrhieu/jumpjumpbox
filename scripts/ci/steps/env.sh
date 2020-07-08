@@ -17,7 +17,7 @@ export LANG=en_US.UTF-8
 # build settings
 ###
 export BUILD_TARGET=${BUILD_TARGET:-"Android"}
-export BUILD_NAME=${BUILD_NAME:-"BuildAndroid"}
+export BUILD_NAME=${BUILD_NAME:-"Build$BUILD_TARGET"}
 export BUILD_APP_BUNDLE=${BUILD_APP_BUNDLE:-"false"}
 export UNITY_PROJECT=${UNITY_PROJECT:-"unity"}
 

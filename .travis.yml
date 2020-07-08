@@ -86,28 +86,28 @@ before_cache:
 
 jobs:
   include:
-    # - stage: test
-    #   services:
-    #     - docker
-    #   name: EditMode Test
-    #   env: TEST_PLATFORM=editmode IMAGE_NAME=ngtrhieu/unity3d
-    #   script:
-    #     - chmod +x ./scripts/ci_test.sh
-    #     - ./scripts/ci_test.sh
-    #   after_script:
-    #     - aws s3 cp ./test_results s3://${BUILD_BUCKET}/report_${BUILD_TARGET}_${TRAVIS_BUILD_NUMBER} --recursive
+    - stage: test
+      services:
+        - docker
+      name: EditMode Test
+      env: TEST_PLATFORM=editmode IMAGE_NAME=ngtrhieu/unity3d
+      script:
+        - chmod +x ./scripts/ci_test.sh
+        - ./scripts/ci_test.sh
+      after_script:
+        - aws s3 cp ./test_results s3://${BUILD_BUCKET}/report_${BUILD_TARGET}_${TRAVIS_BUILD_NUMBER} --recursive
 
-    # - stage: build
-    #   services:
-    #     - docker
-    #   name: Build Android
-    #   env: BUILD_TARGET=Android IMAGE_NAME=ngtrhieu/unity3d-android
-    #   script:
-    #     - chmod +x ./scripts/ci_build.sh
-    #     - ./scripts/ci_build.sh
-    #   after_success:
-    #     - aws s3 cp ./builds s3://${BUILD_BUCKET}/${BUILD_TARGET}_${TRAVIS_BUILD_NUMBER} --recursive
-    #     - aws s3 cp ./unity/ServerData s3://${CONTENT_BUCKET} --recursive
+    - stage: build
+      services:
+        - docker
+      name: Build Android
+      env: BUILD_TARGET=Android IMAGE_NAME=ngtrhieu/unity3d-android
+      script:
+        - chmod +x ./scripts/ci_build.sh
+        - ./scripts/ci_build.sh
+      after_success:
+        - aws s3 cp ./builds s3://${BUILD_BUCKET}/${BUILD_TARGET}_${TRAVIS_BUILD_NUMBER} --recursive
+        - aws s3 cp ./unity/ServerData s3://${CONTENT_BUCKET} --recursive
 
     - stage: build
       services:
@@ -131,14 +131,15 @@ jobs:
       script:
         - aws s3 cp s3://${BUILD_BUCKET}/${BUILD_TARGET}_${TRAVIS_BUILD_NUMBER} ./builds --recursive
         - echo "ios_build done"
-    # - stage: deploy
-    #   if: branch = master
-    #   name: Deploy Android
-    #   env: BUILD_TARGET=Android
-    #   script:
-    #     # Download build artifact
-    #     - mkdir -p ./builds
-    #     - aws s3 cp s3://${BUILD_BUCKET}/${BUILD_TARGET}_${TRAVIS_BUILD_NUMBER} ./builds --recursive
-    #     # Fastlane distribute
-    #     - chmod +x ./scripts/ci_distribute.sh
-    #     - ./scripts/ci_distribute.sh
+
+    - stage: deploy
+      if: branch = master
+      name: Deploy Android
+      env: BUILD_TARGET=Android
+      script:
+        # Download build artifact
+        - mkdir -p ./builds
+        - aws s3 cp s3://${BUILD_BUCKET}/${BUILD_TARGET}_${TRAVIS_BUILD_NUMBER} ./builds --recursive
+        # Fastlane distribute
+        - chmod +x ./scripts/ci_distribute.sh
+        - ./scripts/ci_distribute.sh
