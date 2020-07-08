@@ -26,8 +26,8 @@ before_install:
   # - if [[ -d $HOME/docker ]]; then ls $HOME/docker/*.tar.gz | xargs -I {file} sh -c "zcat {file} | docker load"; fi
 
   # Install curl, unzip
-  - [ TRAVIS_OS_NAME = 'linux' ] && sudo apt-get update
-  - [ TRAVIS_OS_NAME = 'linux' ] && sudo apt-get install curl unzip -y
+  - "[ TRAVIS_OS_NAME = 'linux' ] && sudo apt-get update"
+  - "[ TRAVIS_OS_NAME = 'linux' ] && sudo apt-get install curl unzip -y"
 
 install:
   # Install aws-cli
@@ -40,17 +40,17 @@ install:
   - ./scripts/utils/aws_credentials.sh
 
   # Install nodejs and yarn
-  - >4
-    [ TRAVIS_OS_NAME = 'linux' ] && curl -sL https://deb.nodesource.com/setup_12.x | sudo bash
+  - >
+    "[ TRAVIS_OS_NAME = 'linux' ] && curl -sL https://deb.nodesource.com/setup_12.x | sudo bash
     && curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | sudo apt-key add -
     && echo "deb https://dl.yarnpkg.com/debian/ stable main" | sudo tee /etc/apt/sources.list.d/yarn.list
     && sudo apt-get update
-    && sudo apt-get install nodejs yarn -y
-  - [ TRAVIS_OS_NAME = 'osx' ] && brew install node yarn
+    && sudo apt-get install nodejs yarn -y"
+  - "[ TRAVIS_OS_NAME = 'osx' ] && brew install node yarn"
 
   # Install ruby bundler
-  - [ TRAVIS_OS_NAME = 'linux' ] && sudo apt-get install ruby-full -y
-  - [ TRAVIS_OS_NAME = 'osx' ] && brew install ruby
+  - "[ TRAVIS_OS_NAME = 'linux' ] && sudo apt-get install ruby-full -y"
+  - "[ TRAVIS_OS_NAME = 'osx' ] && brew install ruby"
   - gem install bundler
 
 before_script:
@@ -119,7 +119,6 @@ jobs:
         - echo AWS $(aws --version)
         - aws s3 cp s3://${BUILD_BUCKET}/${BUILD_TARGET}_${TRAVIS_BUILD_NUMBER} ./builds --recursive
         - echo "ios_build done"
-
     # - stage: deploy
     #   if: branch = master
     #   name: Deploy Android
@@ -128,7 +127,6 @@ jobs:
     #     # Download build artifact
     #     - mkdir -p ./builds
     #     - aws s3 cp s3://${BUILD_BUCKET}/${BUILD_TARGET}_${TRAVIS_BUILD_NUMBER} ./builds --recursive
-
     #     # Fastlane distribute
     #     - chmod +x ./scripts/ci_distribute.sh
     #     - ./scripts/ci_distribute.sh
