@@ -36,9 +36,9 @@ install:
   - ./scripts/utils/aws_credentials.sh
 
   # Install nodejs and yarn
-  - curl -sL https://deb.nodesource.com/setup_12.x | bash
-  - curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add -
-  - echo "deb https://dl.yarnpkg.com/debian/ stable main" | tee /etc/apt/sources.list.d/yarn.list
+  - curl -sL https://deb.nodesource.com/setup_12.x | sudo bash
+  - curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | sudo apt-key add -
+  - echo "deb https://dl.yarnpkg.com/debian/ stable main" | sudo tee /etc/apt/sources.list.d/yarn.list
   - sudo apt-get install nodejs yarn -y
 
   # Install ruby bundler
