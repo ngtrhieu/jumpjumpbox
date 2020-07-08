@@ -27,7 +27,7 @@ before_install:
 
   # Install curl, unzip
   - |
-    if [ TRAVIS_OS_NAME = 'linux' ]; then
+    if [ $TRAVIS_OS_NAME = 'linux' ]; then
       sudo apt-get update
       sudo apt-get install curl unzip
     fi
@@ -44,21 +44,21 @@ install:
 
   # Install nodejs and yarn
   - |
-    if [ TRAVIS_OS_NAME = 'linux' ]; then
+    if [ $TRAVIS_OS_NAME = 'linux' ]; then
       curl -sL https://deb.nodesource.com/setup_12.x | sudo bash
       curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | sudo apt-key add -
       echo "deb https://dl.yarnpkg.com/debian/ stable main" | sudo tee /etc/apt/sources.list.d/yarn.list
       sudo apt-get update
       sudo apt-get install nodejs yarn -y
-    elif [ TRAVIS_OS_NAME = 'osx' ]; then
+    elif [ $TRAVIS_OS_NAME = 'osx' ]; then
       brew install node yarn
     fi
 
   # Install ruby bundler
   - |
-    if [ TRAVIS_OS_NAME = 'linux' ]; then
+    if [ $TRAVIS_OS_NAME = 'linux' ]; then
       sudo apt-get install ruby-full -y
-    elif [ TRAVIS_OS_NAME = 'osx' ]; then
+    elif [ $TRAVIS_OS_NAME = 'osx' ]; then
       brew install ruby
     fi
   - gem install bundler
