@@ -28,14 +28,6 @@ export PROJECT_PATH=${PROJECT_PATH:-"$(pwd)/$UNITY_PROJECT"}
 export RESULT_PATH=${RESULT_PATH:-"$(pwd)/test_results"}
 export BUILD_PATH=${BUILD_PATH:-"$(pwd)/builds/$BUILD_TARGET"}
 
-# export ANDROID_BUILD_PATH to point to .apk or .aab file
-# depends on BUILD_APP_BUNDLE
-if [ $BUILD_APP_BUNDLE = "false" ]; then
-    export ANDROID_BUILD_PATH="${BUILD_PATH}/${BUILD_NAME}.apk"
-else
-    export ANDROID_BUILD_PATH="${BUILD_PATH}/${BUILD_NAME}.aab"
-fi
-
 ###
 # unity
 ###
@@ -46,7 +38,15 @@ export UNITY_BUILD_PROFILE=${UNITY_BUILD_PROFILE:-"$TRAVIS_BRANCH"}
 # (required PROJECT_PATH to be set first)
 export UNITY_PROJECT_VERSION=${UNITY_PROJECT_VERSION:-"$(node $(pwd)/scripts/utils/get_project_version.js)"}
 if [ -n $UNITY_PROJECT_VERSION ]; then
-    export BUILD_NAME=${BUILD_NAME}_${UNITY_PROJECT_VERSION}
+    export BUILD_NAME=${BUILD_NAME}_v${UNITY_PROJECT_VERSION}
+fi
+
+# export ANDROID_BUILD_PATH to point to .apk or .aab file
+# depends on BUILD_APP_BUNDLE
+if [ $BUILD_APP_BUNDLE = "false" ]; then
+    export ANDROID_BUILD_PATH="${BUILD_PATH}/${BUILD_NAME}.apk"
+else
+    export ANDROID_BUILD_PATH="${BUILD_PATH}/${BUILD_NAME}.aab"
 fi
 
 # path to the folder where bundles will be built
