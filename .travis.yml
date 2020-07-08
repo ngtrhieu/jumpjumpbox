@@ -86,9 +86,11 @@ jobs:
       if: branch = master
       name: Deploy Android
       env: BUILD_TARGET=Android IMAGE_NAME=ngtrhieu/unity3d-android
-      before_script:
+      script:
+        # Download build artifact
         - mkdir -p ./builds
         - aws s3 cp s3://${BUILD_BUCKET}/${BUILD_TARGET}_${TRAVIS_BUILD_NUMBER} ./builds --recursive
-      script:
+
+        # Fastlane distribute
         - chmod +x ./scripts/ci_distribute.sh
         - ./scripts/ci_distribute.sh

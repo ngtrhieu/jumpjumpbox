@@ -45,6 +45,9 @@ export UNITY_BUILD_PROFILE=${UNITY_BUILD_PROFILE:-"$TRAVIS_BRANCH"}
 
 # (required PROJECT_PATH to be set first)
 export UNITY_PROJECT_VERSION=${UNITY_PROJECT_VERSION:-"$(node $(pwd)/scripts/utils/get_project_version.js)"}
+if [ -n $UNITY_PROJECT_VERSION ]; then
+    export BUILD_NAME=${BUILD_NAME}_${UNITY_PROJECT_VERSION}
+fi
 
 # path to the folder where bundles will be built
 export UNITY_CONTENT_PATH=$UNITY_PATH/ServerData/v$UNITY_PROJECT_VERSION/$BUILD_TARGET
