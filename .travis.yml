@@ -26,8 +26,11 @@ before_install:
   # - if [[ -d $HOME/docker ]]; then ls $HOME/docker/*.tar.gz | xargs -I {file} sh -c "zcat {file} | docker load"; fi
 
   # Install curl, unzip
-  - "[ TRAVIS_OS_NAME = 'linux' ] && sudo apt-get update"
-  - "[ TRAVIS_OS_NAME = 'linux' ] && sudo apt-get install curl unzip -y"
+  - |
+    if [ TRAVIS_OS_NAME = 'linux' ]; then
+      sudo apt-get update
+      sudo apt-get install curl unzip
+    fi
 
 install:
   # Install aws-cli
@@ -40,17 +43,24 @@ install:
   - ./scripts/utils/aws_credentials.sh
 
   # Install nodejs and yarn
-  - >
-    "[ TRAVIS_OS_NAME = 'linux' ] && curl -sL https://deb.nodesource.com/setup_12.x | sudo bash
-    && curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | sudo apt-key add -
-    && echo "deb https://dl.yarnpkg.com/debian/ stable main" | sudo tee /etc/apt/sources.list.d/yarn.list
-    && sudo apt-get update
-    && sudo apt-get install nodejs yarn -y"
-  - "[ TRAVIS_OS_NAME = 'osx' ] && brew install node yarn"
+  - |
+    if [ TRAVIS_OS_NAME = 'linux' ]; then
+      curl -sL https://deb.nodesource.com/setup_12.x | sudo bash
+      curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | sudo apt-key add -
+      echo "deb https://dl.yarnpkg.com/debian/ stable main" | sudo tee /etc/apt/sources.list.d/yarn.list
+      sudo apt-get update
+      sudo apt-get install nodejs yarn -y
+    elif [ TRAVIS_OS_NAME = 'osx' ]; then
+      brew install node yarn
+    fi
 
   # Install ruby bundler
-  - "[ TRAVIS_OS_NAME = 'linux' ] && sudo apt-get install ruby-full -y"
-  - "[ TRAVIS_OS_NAME = 'osx' ] && brew install ruby"
+  - |
+    if [ TRAVIS_OS_NAME = 'linux' ]; then
+      sudo apt-get install ruby-full -y
+    elif [ TRAVIS_OS_NAME = 'osx' ]; then
+      brew install ruby
+    fi
   - gem install bundler
 
 before_script:
