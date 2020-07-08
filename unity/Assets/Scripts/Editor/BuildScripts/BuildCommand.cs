@@ -71,16 +71,15 @@ static class BuildCommand {
   static string GetFixedBuildPath(
     BuildTarget buildTarget, string buildPath, string buildName
   ) {
-    if (buildTarget.ToString().ToLower().Contains("windows")) {
-      buildName += ".exe";
-    } else if (buildTarget == BuildTarget.Android) {
+    var extension = "exe";
+    if (buildTarget == BuildTarget.Android) {
 #if UNITY_2018_3_OR_NEWER
-      buildName += EditorUserBuildSettings.buildAppBundle ? ".aab" : ".apk";
+      extension = EditorUserBuildSettings.buildAppBundle ? "aab" : "apk";
 #else
-      buildName += ".apk";
+      extension = "apk";
 #endif
     }
-    return buildPath + buildName;
+    return string.Format("{0}/{1}.{2}", buildPath, buildName, extension);
   }
 
   static BuildOptions GetBuildOptions() {
