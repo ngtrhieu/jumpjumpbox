@@ -34,9 +34,15 @@ before_install:
 
 install:
   # Install aws-cli
-  - curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
-  - unzip awscliv2.zip
-  - sudo ./aws/install
+  - |
+    if [ $TRAVIS_OS_NAME = 'linux' ]; then
+      curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+      unzip awscliv2.zip
+      sudo ./aws/install
+    elif [ $TRAVIS_OS_NAME = 'osx' ]; then
+      curl "https://awscli.amazonaws.com/AWSCLIV2.pkg" -o "AWSCLIV2.pkg"
+      sudo installer -pkg AWSCLIV2.pkg -target /
+    fi
 
   # Setup aws-credentials based on ARTIFACTS_KEY and ARTIFACTS_SECRET
   - chmod +x ./scripts/utils/aws_credentials.sh
