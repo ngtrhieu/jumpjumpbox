@@ -59,6 +59,7 @@
     "Appfile": "ruby",
     "Fastfile": "ruby",
     "Pluginfile": "ruby",
+    "Matchfile": "ruby",
     "*.docker": "dockerfile"
   }
 }

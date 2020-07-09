@@ -27,3 +27,37 @@ platform :android do
   end
 end
 
+platform :ios do
+  lane :build do
+
+    APP_ID = "com.ngtrhieu.jumpjumpbox"
+    APP_PROFILE = "match Development com.ngtrhieu.jumpjumpbox"
+    TEAM_ID = "V2792QQJMU"
+    
+    match(
+      readonly: is_ci,
+      app_identifier: APP_ID
+    )
+
+    settings_to_override = {
+      :BUNDLE_IDENTIFIER => APP_ID,
+      :PROVISIONING_PROFILE_SPECIFIER => APP_PROFILE,
+      :DEVELOPMENT_TEAM => TEAM_ID
+    }
+
+    gym(
+      project: File.join(ENV["BUILD_PATH"], "Unity-iPhone.xcodeproj"),
+      scheme: "Unity-iPhone",
+      output_directory: ENV["BUILD_PATH"],
+      output_name: ENV["BUILD_NAME"],
+      clean: true,
+      xcargs: settings_to_override,
+      export_options: {
+        method: "development",
+        provisioningProfiles: {
+          APP_ID => APP_PROFILE
+        }
+      }
+    )
+  end
+end
