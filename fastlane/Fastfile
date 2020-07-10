@@ -58,7 +58,7 @@ platform :ios do
     }
 
     gym(
-      project: File.join(ENV["BUILD_PATH"], "Unity-iPhone.xcodeproj"),
+      project: File.join(ENV["BUILD_PATH"], ENV["BUILD_NAME"], "Unity-iPhone.xcodeproj"),
       scheme: "Unity-iPhone",
       output_directory: ENV["BUILD_PATH"],
       output_name: ENV["BUILD_NAME"],

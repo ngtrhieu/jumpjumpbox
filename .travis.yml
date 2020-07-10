@@ -143,6 +143,7 @@ jobs:
       stage: ios-build
       os: osx
       language: objective-c
+      env: BUILD_TARGET=iOS
       script:
         - aws s3 cp s3://${BUILD_BUCKET}/${BUILD_TARGET}_${TRAVIS_BUILD_NUMBER} ./builds --recursive
         - chmod +x ./scripts/ci/steps/env.sh
