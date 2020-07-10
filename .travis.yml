@@ -98,8 +98,8 @@ _build_job: &build_job
     - chmod +x ./scripts/ci_build.sh
     - ./scripts/ci_build.sh
   after_success:
-    - aws s3 cp ./builds s3://${BUILD_BUCKET}/${BUILD_TARGET}_${TRAVIS_BUILD_NUMBER} --recursive
-    - aws s3 cp ./unity/ServerData s3://${CONTENT_BUCKET} --recursive
+    - aws s3 sync ./builds s3://${BUILD_BUCKET}/${BUILD_TARGET}_${TRAVIS_BUILD_NUMBER} --recursive
+    - aws s3 sync ./unity/ServerData s3://${CONTENT_BUCKET} --recursive
 
 _deploy_job: &deploy_job
   stage: deploy
@@ -129,7 +129,7 @@ jobs:
     #     - chmod +x ./scripts/ci_test.sh
     #     - ./scripts/ci_test.sh
     #   after_script:
-    #     - aws s3 cp ./test_results s3://${BUILD_BUCKET}/report_${TEST_PLATFORM}_${BUILD_TARGET}_${TRAVIS_BUILD_NUMBER} --recursive
+    #     - aws sync cp ./test_results s3://${BUILD_BUCKET}/report_${TEST_PLATFORM}_${BUILD_TARGET}_${TRAVIS_BUILD_NUMBER} --recursive
 
     # - name: Build Android
     #   env: BUILD_TARGET=Android IMAGE_NAME=ngtrhieu/unity3d-android
@@ -145,7 +145,11 @@ jobs:
       language: objective-c
       script:
         - aws s3 cp s3://${BUILD_BUCKET}/${BUILD_TARGET}_${TRAVIS_BUILD_NUMBER} ./builds --recursive
-        - echo "ios_build done"
+        - chmod +x ./scripts/ci/steps/env.sh
+        - source ./scripts/ci/steps/env.sh
+        - bundle exec fastlane ios archive
+      after_script:
+        - aws sync cp ./test_results s3://${BUILD_BUCKET}/report_${TEST_PLATFORM}_${BUILD_TARGET}_${TRAVIS_BUILD_NUMBER} --recursive
 
     # - name: Deploy Android
     #   env: BUILD_TARGET=Android

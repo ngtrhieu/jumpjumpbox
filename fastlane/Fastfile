@@ -28,7 +28,7 @@ platform :android do
 end
 
 platform :ios do
-  lane :build do
+  lane :archive do
 
     APP_ID = "com.ngtrhieu.jumpjumpbox"
     APP_PROFILE = "match Development com.ngtrhieu.jumpjumpbox"
