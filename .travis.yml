@@ -44,7 +44,7 @@ install:
       sudo installer -pkg AWSCLIV2.pkg -target /
     fi
 
-  # Setup aws-credentials based on ARTIFACTS_KEY and ARTIFACTS_SECRET
+  # Setup aws-credentials based on AWS_ACCESS_KEY and AWS_ACCESS_SECRET
   - chmod +x ./scripts/utils/aws_credentials.sh
   - ./scripts/utils/aws_credentials.sh
 

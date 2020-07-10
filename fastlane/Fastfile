@@ -36,7 +36,9 @@ platform :ios do
     
     match(
       readonly: is_ci,
-      app_identifier: APP_ID
+      app_identifier: APP_ID,
+      s3_access_key: ENV["AWS_ACCESS_KEY"],
+      s3_secret_access_key: ENV["AWS_ACCESS_SECRET"],
     )
 
     settings_to_override = {
