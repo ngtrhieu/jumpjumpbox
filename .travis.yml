@@ -113,9 +113,9 @@ _deploy_job: &deploy_job
     - source ./scripts/ci/steps/env.sh
     - |
       if [ $BUILD_TARGET = 'Android' ]; then
-        sudo bundle exec fastlane android distribute;
+        bundle exec fastlane android distribute;
       elif [ $BUILD_TARGET = 'iOS' ]; then
-        sudo bundle exec fastlane android distribute;
+        bundle exec fastlane ios distribute;
       fi
 
 jobs:
