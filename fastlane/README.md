@@ -25,9 +25,9 @@ fastlane android distribute
 ----
 
 ## iOS
-### ios build
+### ios archive
 ```
-fastlane ios build
+fastlane ios archive
 ```
 
 ### ios distribute

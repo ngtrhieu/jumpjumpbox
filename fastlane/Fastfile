@@ -33,9 +33,19 @@ platform :ios do
     APP_ID = "com.ngtrhieu.jumpjumpbox"
     APP_PROFILE = "match Development com.ngtrhieu.jumpjumpbox"
     TEAM_ID = "V2792QQJMU"
+
+    delete_keychain(name: "temp_keychain") if File.exist?(File.expand_path("~/Library/Keychains/temp_keychain-db"))
+    create_keychain(
+      name: "temp_keychain",
+      password: "temp_password",
+      unlock: true,
+      timeout: false,
+      add_to_search_list: true
+    )
     
     match(
       readonly: is_ci,
+      keychain_name: "temp_keychain",
       app_identifier: APP_ID,
       s3_access_key: ENV["AWS_ACCESS_KEY"],
       s3_secret_access_key: ENV["AWS_ACCESS_SECRET"],
@@ -60,6 +70,10 @@ platform :ios do
           APP_ID => APP_PROFILE
         }
       }
+    )
+
+    delete_keychain(
+      name: "temp_keychain"
     )
   end
 
