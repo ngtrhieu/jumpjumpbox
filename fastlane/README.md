@@ -12,7 +12,7 @@ Install _fastlane_ using
 ```
 [sudo] gem install fastlane -NV
 ```
-or alternatively using `brew install fastlane`
+or alternatively using `brew cask install fastlane`
 
 # Available Actions
 ## Android
@@ -28,6 +28,11 @@ fastlane android distribute
 ### ios build
 ```
 fastlane ios build
+```
+
+### ios distribute
+```
+fastlane ios distribute
 ```
 
 

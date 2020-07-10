@@ -90,62 +90,67 @@ before_cache:
   # - mkdir -p $HOME/docker
   # - docker images -a --filter='dangling=false' --format '{{.Repository}}:{{.Tag}} {{.ID}}' | xargs -n 2 -t bash -c 'test -e $HOME/docker/$1.tar.gz || docker save $0 | gzip -2 > $HOME/docker/$1.tar.gz'
 
+_build_job: &build_job
+  stage: build
+  services:
+    - docker
+  script:
+    - chmod +x ./scripts/ci_build.sh
+    - ./scripts/ci_build.sh
+  after_success:
+    - aws s3 cp ./builds s3://${BUILD_BUCKET}/${BUILD_TARGET}_${TRAVIS_BUILD_NUMBER} --recursive
+    - aws s3 cp ./unity/ServerData s3://${CONTENT_BUCKET} --recursive
+
+_deploy_job: &deploy_job
+  stage: deploy
+  script:
+    # Download build artifact
+    - mkdir -p ./builds
+    - aws s3 cp s3://${BUILD_BUCKET}/${BUILD_TARGET}_${TRAVIS_BUILD_NUMBER} ./builds --recursive
+
+    # Fastlane distribute
+    - chmod +x ./scripts/ci/steps/env.sh
+    - source ./scripts/ci/steps/env.sh
+    - |
+      if [ $BUILD_TARGET = 'Android' ]; then
+        sudo bundle exec fastlane android distribute;
+      elif [ $BUILD_TARGET = 'iOS' ]; then
+        sudo bundle exec fastlane android distribute;
+      fi
+
 jobs:
   include:
-    - stage: test
-      services:
-        - docker
-      name: EditMode Test
-      env: TEST_PLATFORM=editmode IMAGE_NAME=ngtrhieu/unity3d
-      script:
-        - chmod +x ./scripts/ci_test.sh
-        - ./scripts/ci_test.sh
-      after_script:
-        - aws s3 cp ./test_results s3://${BUILD_BUCKET}/report_${BUILD_TARGET}_${TRAVIS_BUILD_NUMBER} --recursive
+    # - name: EditMode Test
+    #   stage: test
+    #   services:
+    #     - docker
+    #   env: TEST_PLATFORM=editmode IMAGE_NAME=ngtrhieu/unity3d
+    #   script:
+    #     - chmod +x ./scripts/ci_test.sh
+    #     - ./scripts/ci_test.sh
+    #   after_script:
+    #     - aws s3 cp ./test_results s3://${BUILD_BUCKET}/report_${TEST_PLATFORM}_${BUILD_TARGET}_${TRAVIS_BUILD_NUMBER} --recursive
 
-    - stage: build
-      services:
-        - docker
-      name: Build Android
-      env: BUILD_TARGET=Android IMAGE_NAME=ngtrhieu/unity3d-android
-      script:
-        - chmod +x ./scripts/ci_build.sh
-        - ./scripts/ci_build.sh
-      after_success:
-        - aws s3 cp ./builds s3://${BUILD_BUCKET}/${BUILD_TARGET}_${TRAVIS_BUILD_NUMBER} --recursive
-        - aws s3 cp ./unity/ServerData s3://${CONTENT_BUCKET} --recursive
+    # - name: Build Android
+    #   env: BUILD_TARGET=Android IMAGE_NAME=ngtrhieu/unity3d-android
+    #   <<: *build_job
 
-    - stage: build
-      services:
-        - docker
-      name: Build XCode project
+    - name: Build iOS
       env: BUILD_TARGET=iOS IMAGE_NAME=ngtrhieu/unity3d-ios
-      script:
-        - chmod +x ./scripts/ci_build.sh
-        - ./scripts/ci_build.sh
-      after_success:
-        - aws s3 cp ./builds s3://${BUILD_BUCKET}/${BUILD_TARGET}_${TRAVIS_BUILD_NUMBER} --recursive
-        - aws s3 cp ./unity/ServerData s3://${CONTENT_BUCKET} --recursive
+      <<: *build_job
 
-    - stage: ios-build
-      name: Build iOS
-
-      # This stage specifically run on osx
+    - name: Archive iOS
+      stage: ios-build
       os: osx
       language: objective-c
-
       script:
         - aws s3 cp s3://${BUILD_BUCKET}/${BUILD_TARGET}_${TRAVIS_BUILD_NUMBER} ./builds --recursive
         - echo "ios_build done"
 
-    - stage: deploy
-      if: branch = master
-      name: Deploy Android
-      env: BUILD_TARGET=Android
-      script:
-        # Download build artifact
-        - mkdir -p ./builds
-        - aws s3 cp s3://${BUILD_BUCKET}/${BUILD_TARGET}_${TRAVIS_BUILD_NUMBER} ./builds --recursive
-        # Fastlane distribute
-        - chmod +x ./scripts/ci_distribute.sh
-        - ./scripts/ci_distribute.sh
+    # - name: Deploy Android
+    #   env: BUILD_TARGET=Android
+    #   <<: *deploy_job
+
+    - name: Deploy iOS
+      env: BUILD_TARGET=iOS
+      <<: *deploy_job

@@ -20,8 +20,8 @@ platform :android do
     firebase_app_distribution(
       app: "1:717031788374:android:3c52a8a36583f44a4650f7",
       groups: "internal-testers",
-      firebase_cli_path: "./node_modules/.bin/firebase",
       apk_path: ENV["ANDROID_BUILD_PATH"],
+      firebase_cli_path: "./node_modules/.bin/firebase",
       firebase_cli_token: ENV["FIREBASE_CLI_TOKEN"]
     )
   end
@@ -58,6 +58,16 @@ platform :ios do
           APP_ID => APP_PROFILE
         }
       }
+    )
+  end
+
+  lane :distribute do
+    firebase_app_distribution(
+      app: "1:717031788374:ios:be121905ee687dea4650f7",
+      groups: "internal-testers",
+      ipa_path: Path.join(ENV["BUILD_PATH"], ENV["BUILD_NAME"] + ".ipa"),
+      firebase_cli_path: "./node_modules/.bin/firebase",
+      firebase_cli_token: ENV["FIREBASE_CLI_TOKEN"]
     )
   end
 end
