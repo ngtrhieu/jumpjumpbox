@@ -58,10 +58,14 @@ platform :ios do
       s3_secret_access_key: ENV["AWS_ACCESS_SECRET"],
     )
 
-    # update_code_signing_settings(
-    #   use_automatic_signing: false,
-    #   path: File.join(ENV["BUILD_PATH"], ENV["BUILD_NAME"], "Unity-iPhone.xcodeproj"),
-    # )
+    update_code_signing_settings(
+      path: File.join(ENV["BUILD_PATH"], ENV["BUILD_NAME"], "Unity-iPhone.xcodeproj"),
+      targets: "Unity-iPhone",
+      use_automatic_signing: false,
+      code_sign_identity: "iPhone Distribution",
+      team_id: TEAM_ID,
+      profile_name: APP_PROFILE
+    )
 
     settings_to_override = {
       :BUNDLE_IDENTIFIER => APP_ID,
