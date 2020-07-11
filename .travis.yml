@@ -120,20 +120,20 @@ _deploy_job: &deploy_job
 
 jobs:
   include:
-    # - name: EditMode Test
-    #   stage: test
-    #   services:
-    #     - docker
-    #   env: TEST_PLATFORM=editmode IMAGE_NAME=ngtrhieu/unity3d
-    #   script:
-    #     - chmod +x ./scripts/ci_test.sh
-    #     - ./scripts/ci_test.sh
-    #   after_script:
-    #     - aws sync cp ./test_results s3://${BUILD_BUCKET}/report_${TEST_PLATFORM}_${BUILD_TARGET}_${TRAVIS_BUILD_NUMBER}
+    - name: EditMode Test
+      stage: test
+      services:
+        - docker
+      env: TEST_PLATFORM=editmode IMAGE_NAME=ngtrhieu/unity3d
+      script:
+        - chmod +x ./scripts/ci_test.sh
+        - ./scripts/ci_test.sh
+      after_script:
+        - aws sync cp ./test_results s3://${BUILD_BUCKET}/report_${TEST_PLATFORM}_${BUILD_TARGET}_${TRAVIS_BUILD_NUMBER}
 
-    # - name: Build Android
-    #   env: BUILD_TARGET=Android IMAGE_NAME=ngtrhieu/unity3d-android
-    #   <<: *build_job
+    - name: Build Android
+      env: BUILD_TARGET=Android IMAGE_NAME=ngtrhieu/unity3d-android
+      <<: *build_job
 
     - name: Build iOS
       env: BUILD_TARGET=iOS IMAGE_NAME=ngtrhieu/unity3d-ios
@@ -158,9 +158,9 @@ jobs:
       after_script:
         - aws s3 sync ./builds s3://${BUILD_BUCKET}/${BUILD_TARGET}_${TRAVIS_BUILD_NUMBER}
 
-    # - name: Deploy Android
-    #   env: BUILD_TARGET=Android
-    #   <<: *deploy_job
+    - name: Deploy Android
+      env: BUILD_TARGET=Android
+      <<: *deploy_job
 
     - name: Deploy iOS
       env: BUILD_TARGET=iOS
