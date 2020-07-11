@@ -34,19 +34,24 @@ platform :ios do
     APP_PROFILE = "match Development com.ngtrhieu.jumpjumpbox"
     TEAM_ID = "V2792QQJMU"
 
-    delete_keychain(name: "temp_keychain") if File.exist?(File.expand_path("~/Library/Keychains/temp_keychain-db"))
+    KEYCHAIN_NAME = "temp_keychain"
+    KEYCHAIN_PASSWORD = "temp_password"
+    KEYCHAIN_PATH = "~/Library/Keychains/#{KEYCHAIN_NAME}-db"
+
+    delete_keychain(name: KEYCHAIN_NAME) if File.exist?(File.expand_path(KEYCHAIN_PATH))
     create_keychain(
-      name: "temp_keychain",
-      password: "temp_password",
+      name: KEYCHAIN_NAME,
+      password: KEYCHAIN_PASSWORD,
       unlock: true,
       timeout: false,
+      lock_when_sleeps: false,
       add_to_search_list: true
     )
     
     match(
       readonly: is_ci,
-      keychain_name: "temp_keychain",
-      keychain_password: "temp_password",
+      keychain_name: KEYCHAIN_NAME,
+      keychain_password: KEYCHAIN_PASSWORD,
       app_identifier: APP_ID,
       s3_access_key: ENV["AWS_ACCESS_KEY"],
       s3_secret_access_key: ENV["AWS_ACCESS_SECRET"],
@@ -60,7 +65,8 @@ platform :ios do
     settings_to_override = {
       :BUNDLE_IDENTIFIER => APP_ID,
       :PROVISIONING_PROFILE_SPECIFIER => APP_PROFILE,
-      :DEVELOPMENT_TEAM => TEAM_ID
+      :DEVELOPMENT_TEAM => TEAM_ID,
+      :OTHER_CODE_SIGN_FLAGS => "--keychain=\"#{KEYCHAIN_PATH}\""
     }
 
     gym(
