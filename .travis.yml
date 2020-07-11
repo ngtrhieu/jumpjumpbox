@@ -148,6 +148,11 @@ jobs:
         - aws s3 cp s3://${BUILD_BUCKET}/${BUILD_TARGET}_${TRAVIS_BUILD_NUMBER} ./builds --recursive
         - chmod +x ./scripts/ci/steps/env.sh
         - source ./scripts/ci/steps/env.sh
+
+        # Need to chmod +x for these .sh files inside build folders
+        - chmod +x ./builds/${BUILD_TARGET}/${BUILD_NAME}/MapFileParser.sh
+        - chmod +x ./builds/${BUILD_TARGET}/${BUILD_NAME}/process_symbols.sh
+
         - bundle exec fastlane ios archive
       after_script:
         - aws sync cp ./test_results s3://${BUILD_BUCKET}/report_${TEST_PLATFORM}_${BUILD_TARGET}_${TRAVIS_BUILD_NUMBER}
