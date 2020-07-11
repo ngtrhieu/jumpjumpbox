@@ -142,6 +142,7 @@ jobs:
     - name: Archive iOS
       stage: ios-build
       os: osx
+      osx_image: xcode11.6
       language: objective-c
       env: BUILD_TARGET=iOS
       script:

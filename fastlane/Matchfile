@@ -3,8 +3,11 @@ s3_bucket("ngtrhieu-certificates")
 
 storage_mode("s3")
 
+type("appstore") # The default type, can be: appstore, adhoc, enterprise or development
 username("kealezlo@gmail.com") # Your Apple Developer Portal username
 team_id("V2792QQJMU")
+s3_access_key(ENV["AWS_ACCESS_KEY"])
+s3_secret_access_key(ENV["AWS_ACCESS_SECRET"])
 
 # For all available options run `fastlane match --help`
 # Remove the # in the beginning of the line to enable the other options
