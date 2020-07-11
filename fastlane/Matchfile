@@ -3,7 +3,6 @@ s3_bucket("ngtrhieu-certificates")
 
 storage_mode("s3")
 
-type("development") # The default type, can be: appstore, adhoc, enterprise or development
 username("kealezlo@gmail.com") # Your Apple Developer Portal username
 team_id("V2792QQJMU")
 
