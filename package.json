@@ -11,7 +11,8 @@
     "test": "./scripts/local_test.sh",
     "build": "yarn build:android",
     "build:android": "BUILD_TARGET=Android IMAGE_NAME=ngtrhieu/unity3d-android ./scripts/local_build.sh",
-    "build:ios": "BUILD_TARGET=iOS IMAGE_NAME=ngtrhieu/unity3d-ios ./scripts/local_build.sh"
+    "build:ios": "BUILD_TARGET=iOS IMAGE_NAME=ngtrhieu/unity3d-ios ./scripts/local_build.sh",
+    "archive:ios": "./scripts/local_archive.sh"
   },
   "devDependencies": {
     "@commitlint/cli": "^9.0.1",

@@ -52,6 +52,11 @@ platform :ios do
       s3_secret_access_key: ENV["AWS_ACCESS_SECRET"],
     )
 
+    update_code_signing_settings(
+      use_automatic_signing: false,
+      path: File.join(ENV["BUILD_PATH"], ENV["BUILD_NAME"], "Unity-iPhone.xcodeproj"),
+    )
+
     settings_to_override = {
       :BUNDLE_IDENTIFIER => APP_ID,
       :PROVISIONING_PROFILE_SPECIFIER => APP_PROFILE,
@@ -65,7 +70,6 @@ platform :ios do
       output_name: ENV["BUILD_NAME"],
       clean: true,
       xcargs: settings_to_override,
-      codesigning_identity: ENV["CODE_SIGN_IDENTITY"],
       export_options: {
         method: "development",
         provisioningProfiles: {
