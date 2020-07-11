@@ -156,7 +156,7 @@ jobs:
 
         - bundle exec fastlane ios archive
       after_script:
-        - aws sync cp ./test_results s3://${BUILD_BUCKET}/report_${TEST_PLATFORM}_${BUILD_TARGET}_${TRAVIS_BUILD_NUMBER}
+        - aws s3 sync ./builds s3://${BUILD_BUCKET}/${BUILD_TARGET}_${TRAVIS_BUILD_NUMBER}
 
     # - name: Deploy Android
     #   env: BUILD_TARGET=Android
