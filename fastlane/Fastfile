@@ -57,6 +57,11 @@ platform :ios do
       :DEVELOPMENT_TEAM => TEAM_ID
     }
 
+    update_code_signing_settings(
+      use_automatic_signing: false,
+      path: File.join(ENV["BUILD_PATH"], ENV["BUILD_NAME"], "Unity-iPhone.xcodeproj"),
+    )
+
     gym(
       project: File.join(ENV["BUILD_PATH"], ENV["BUILD_NAME"], "Unity-iPhone.xcodeproj"),
       scheme: "Unity-iPhone",
@@ -64,6 +69,7 @@ platform :ios do
       output_name: ENV["BUILD_NAME"],
       clean: true,
       xcargs: settings_to_override,
+      codesigning_identity: ENV["CODE_SIGN_IDENTITY"],
       export_options: {
         method: "development",
         provisioningProfiles: {
