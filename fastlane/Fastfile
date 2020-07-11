@@ -34,25 +34,25 @@ platform :ios do
     APP_PROFILE = "match AppStore com.ngtrhieu.jumpjumpbox"
     TEAM_ID = "V2792QQJMU"
 
-    # KEYCHAIN_NAME = "temp_keychain"
-    # KEYCHAIN_PASSWORD = "temp_password"
-    # KEYCHAIN_PATH = "~/Library/Keychains/#{KEYCHAIN_NAME}-db"
+    KEYCHAIN_NAME = "temp_keychain"
+    KEYCHAIN_PASSWORD = "temp_password"
+    KEYCHAIN_PATH = "~/Library/Keychains/#{KEYCHAIN_NAME}-db"
 
-    # delete_keychain(name: KEYCHAIN_NAME) if File.exist?(File.expand_path(KEYCHAIN_PATH))
-    # create_keychain(
-    #   name: KEYCHAIN_NAME,
-    #   password: KEYCHAIN_PASSWORD,
-    #   unlock: true,
-    #   timeout: false,
-    #   lock_when_sleeps: false,
-    #   add_to_search_list: true
-    # )
+    delete_keychain(name: KEYCHAIN_NAME) if File.exist?(File.expand_path(KEYCHAIN_PATH))
+    create_keychain(
+      name: KEYCHAIN_NAME,
+      password: KEYCHAIN_PASSWORD,
+      unlock: true,
+      timeout: false,
+      lock_when_sleeps: false,
+      add_to_search_list: true
+    )
     
     match(
       type: "appstore",
       readonly: is_ci,
-      # keychain_name: KEYCHAIN_NAME,
-      # keychain_password: KEYCHAIN_PASSWORD,
+      keychain_name: KEYCHAIN_NAME,
+      keychain_password: KEYCHAIN_PASSWORD,
       app_identifier: APP_ID,
       s3_access_key: ENV["AWS_ACCESS_KEY"],
       s3_secret_access_key: ENV["AWS_ACCESS_SECRET"],
@@ -89,9 +89,9 @@ platform :ios do
       }
     )
 
-    # delete_keychain(
-    #   name: "temp_keychain"
-    # )
+    delete_keychain(
+      name: "temp_keychain"
+    )
   end
 
   lane :distribute do
