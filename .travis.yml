@@ -42,7 +42,7 @@ install:
   # Setup aws-credentials based on AWS_ACCESS_KEY and AWS_ACCESS_SECRET
   - |
     chmod +x ./scripts/utils/generate_aws_credentials.sh &&
-    ./scripts/utils/aws_credentials.sh
+    ./scripts/utils/generate_aws_credentials.sh
 
   # Install nodejs and yarn
   - |
