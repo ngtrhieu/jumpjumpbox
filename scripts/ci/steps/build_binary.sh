@@ -5,9 +5,9 @@
 
 set -e
 
-echo :: Running step $0
+echo -e '\033[0;32m:: Running step $0'
 
-echo "Building $BUILD_NAME for $BUILD_TARGET"
+echo ":: Building $BUILD_NAME for $BUILD_TARGET"
 mkdir -p $BUILD_PATH
 
 ${UNITY_EXECUTABLE:-xvfb-run --auto-servernum --server-args='-screen 0 640x480x24' /opt/Unity/Editor/Unity} \
@@ -36,8 +36,8 @@ fi
 echo "Checking build path $BUILD_PATH..."
 ls -la $BUILD_PATH
 if [ -z "$(ls -A $BUILD_PATH)" ]; then
-  echo "Build folder empty. Exit 1"
-  exit 1 # fail job if build folder is empty
+  echo -e "\033[0;31mBuild folder empty. Exit 1"
+  exit 1
 fi
 
-echo :: Step $0 completed
+echo -e '\033[0;32m:: Step $0 completed'

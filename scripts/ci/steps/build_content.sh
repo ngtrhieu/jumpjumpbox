@@ -5,7 +5,7 @@
 
 set -e
 
-echo :: Running step $0
+echo -e '\033[0;32m:: Running step $0'
 
 echo "Building content $BUILD_NAME for $BUILD_TARGET"
 
@@ -17,7 +17,7 @@ ${UNITY_EXECUTABLE:-xvfb-run --auto-servernum --server-args='-screen 0 640x480x2
   -customBuildTarget $BUILD_TARGET \
   -customBuildName $BUILD_NAME \
   -customBuildPath $BUILD_PATH \
-  -addressableProfile $UNITY_BUILD_PROFILE \
+  -addressableProfile $UNITY_ADDRESSABLE_PROFILE \
   -executeMethod BuildContentCommand.PerformBuild \
   -logFile /dev/stdout
 
@@ -36,8 +36,8 @@ fi
 echo "Checking content folder $PROJECT_PATH/ServerData..."
 ls -la $PROJECT_PATH/ServerData
 if [ -z "$(ls -A $PROJECT_PATH/ServerData)" ]; then
-  echo "Content folder empty. Exit 1"
-  exit 1 # fail job if build folder is empty
+  echo -e "\033[0;31mContent folder empty. Exit 1"
+  exit 1
 fi
 
-echo :: Step $0 completed
+echo -e '\033[0;32m:: Step $0 completed'

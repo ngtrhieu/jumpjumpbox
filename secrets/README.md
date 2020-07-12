@@ -13,8 +13,8 @@ You should have these files inside your `secrets` folder:
 - `keystore.keystore`  
   Android keystore file, used to sign Android build.
 
-- `firebase.token`  
-  Firebase CLI token, used to update build to Firebase app distribution.
+- `credentials.sh`  
+  The credentials are stored in this file.
 
 Continue reading to learn how to setup these files.
 
@@ -60,33 +60,62 @@ cat /root/.local/share/unity3d/Unity/Unity_lic.ulf
 
 ### keystore.keystore
 
-You need to either copy your keystore into ./secrets folder, or generate a new keystore _(recommended)_.
+Unity needs this keystore to sign your Android build. You need to either copy your keystore into ./secrets folder, or generate a new keystore _(recommended)_.
 
-If you use existing keystore, you would need to manually set the following environment variables:
-
-- ANDROID_KEYSTORE_PASS
-- ANDROID_KEY_ALIAS_NAME
-- ANDROID_KEY_ALIAS_PASS
-
-It is recommended that you generate a new keystore just for development purposes by:
+To generate your own keystore, just for development purposes by:
 
 - Run the following command:
 
 ```bash
-keytool -genkey -v -keystore keystore.keystore -alias user -keyalg RSA -keysize 2048 -validity 10000
+keytool -genkey -v -keystore keystore.keystore -alias <GOOGLE_KEY_ALIAS_NAME> -keyalg RSA -keysize 2048 -validity 10000
 ```
 
 - When prompted for keystore password, put `password`.
 - Press enter to skip through the rest of the prompts.
 - Copy the newly generated `keystore.keystore` file to the `./secrets` folder.
 
-### firebase.token
-
-- On your development machine, to start the login process with firebase, run
+Regardless of whether you use your own keystore, or generate new one, you need to set these environment variables, preferably into `.secrets/credentials.sh`:
 
 ```bash
-yarn firebase login:ci
+export GOOGLE_KEYSTORE_PASS=${GOOGLE_KEYSTORE_PASS:-"your-keystore-password"}
+export GOOGLE_KEY_ALIAS_NAME=${GOOGLE_KEY_ALIAS_NAME:-"your-key-alias"}
+export GOOGLE_KEY_ALIAS_PASS=${GOOGLE_KEY_ALIAS_PASS:-"your-key-password"}
 ```
 
-- Follow the instruction on terminal to acquire the login token.
-- Copy the login token into the `firebase.token` file.
+### credentials.sh
+
+`credentials.sh` is the bash file that set the rest of the passwords into environment variables. The required variables are:
+
+```bash
+#!/usr/bin/env bash
+
+# AWS credentials
+export AWS_REGION=${AWS_REGION:-'valid-aws-region'}
+export AWS_ACCESS_KEY=${AWS_ACCESS_KEY:-'your-access-key'}
+export AWS_ACCESS_SECRET=${AWS_ACCESS_SECRET:-'your-access-password'}
+
+# Google keystore passwords
+export GOOGLE_KEYSTORE_PASS=${GOOGLE_KEYSTORE_PASS:-"your-keystore-password"}
+export GOOGLE_KEY_ALIAS_NAME=${GOOGLE_KEY_ALIAS_NAME:-"your-key-alias"}
+export GOOGLE_KEY_ALIAS_PASS=${GOOGLE_KEY_ALIAS_PASS:-"your-key-password"}
+
+# Apple provisioning profile
+export APPLE_USERNAME=${APPLE_USERNAME:-'your-apple-developer-id/email'}
+export APPLE_TEAM_ID=${APPLE_TEAM_ID:-'your-apple-developer-team-id'}
+export APPLE_PROVISION_PROFILE=${APPLE_PROVISION_PROFILE:-"your-provisioning-profile-used"}
+export APPLE_PROVISION_PROFILE_PASSWORD=${APPLE_PROVISION_PROFILE_PASSWORD:-'your-profile-encryption-passphrase'}
+export APPLE_PROVISION_PROFILE_BUCKET=${APPLE_PROVISION_PROFILE_BUCKET:-'the-s3-bucket-storing-encrypted-profile'}
+export APPLE_CODE_SIGN_IDENTITY=${APPLE_CODE_SIGN_IDENTITY:-'code-sign-identity'}
+
+# Firebase CLI token
+# Used to upload builds to app distribution
+export FIREBASE_CLI_TOKEN=${FIREBASE_CLI_TOKEN:-'your-firebase-cli-login-token'}
+
+
+```
+
+- AWS_ACCESS keypairs are used to both download provisioning profiles (via [fastlane match](https://docs.fastlane.tools/actions/match/)) and upload build artifacts between build stages. Make sure it has S3 read/write permissions to the target buckets.
+
+- MATCH_PASSWORD is the passphrase used to encrypt iOS provisioning profile via [fastlane match](https://docs.fastlane.tools/actions/match/).
+
+- FIREBASE_CLI_TOKEN is the token to upload your builds to Firebase AppDistribution via Firebase CLI. Run `yarn firebase login:ci` and go through the login step to acquire the token.

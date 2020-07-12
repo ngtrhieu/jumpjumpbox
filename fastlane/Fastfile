@@ -30,9 +30,7 @@ end
 platform :ios do
   lane :archive do
 
-    APP_ID = "com.ngtrhieu.jumpjumpbox"
-    APP_PROFILE = "match AppStore com.ngtrhieu.jumpjumpbox"
-    TEAM_ID = "V2792QQJMU"
+    XCODE_PROJECT_PATH = File.join(ENV["IOS_XCODE_PROJECT_PATH"], "Unity-iPhone.xcodeproj")
 
     KEYCHAIN_NAME = "temp_keychain"
     KEYCHAIN_PASSWORD = "temp_password"
@@ -49,42 +47,50 @@ platform :ios do
     )
     
     match(
+      storage_mode: "s3",
+    
+      s3_region: ENV["AWS_REGION"],
+      s3_bucket: ENV["APPLE_PROVISION_PROFILE_BUCKET"],
+      s3_access_key: ENV["AWS_ACCESS_KEY"],
+      s3_secret_access_key: ENV["AWS_ACCESS_SECRET"],
+      
+      
+      app_identifier: ENV["APP_ID"],
+      username: ENV["APPLE_USERNAME"],
+      team_id: ENV["APPLE_TEAM_ID"],
+
       type: "appstore",
       readonly: is_ci,
       keychain_name: KEYCHAIN_NAME,
       keychain_password: KEYCHAIN_PASSWORD,
-      app_identifier: APP_ID,
-      s3_access_key: ENV["AWS_ACCESS_KEY"],
-      s3_secret_access_key: ENV["AWS_ACCESS_SECRET"],
     )
 
     update_code_signing_settings(
-      path: File.join(ENV["BUILD_PATH"], ENV["BUILD_NAME"], "Unity-iPhone.xcodeproj"),
+      path: XCODE_PROJECT_PATH,
       targets: "Unity-iPhone",
       use_automatic_signing: false,
-      code_sign_identity: "iPhone Distribution",
-      team_id: TEAM_ID,
-      profile_name: APP_PROFILE
+      code_sign_identity: ENV["APPLE_CODE_SIGN_IDENTITY"],
+      team_id: ENV["APPLE_TEAM_ID"],
+      profile_name: ENV["APPLE_PROVISION_PROFILE"]
     )
 
     settings_to_override = {
-      :BUNDLE_IDENTIFIER => APP_ID,
-      :PROVISIONING_PROFILE_SPECIFIER => APP_PROFILE,
-      :DEVELOPMENT_TEAM => TEAM_ID,
-      # :OTHER_CODE_SIGN_FLAGS => '--keychain="' + KEYCHAIN_PATH + '"'
+      :BUNDLE_IDENTIFIER => ENV["APP_ID"],
+      :PROVISIONING_PROFILE_SPECIFIER => ENV["APPLE_PROVISION_PROFILE"],
+      :DEVELOPMENT_TEAM => ENV["APPLE_TEAM_ID"],
     }
 
     gym(
-      project: File.join(ENV["BUILD_PATH"], ENV["BUILD_NAME"], "Unity-iPhone.xcodeproj"),
+      project: XCODE_PROJECT_PATH,
       scheme: "Unity-iPhone",
       output_directory: ENV["BUILD_PATH"],
-      output_name: ENV["BUILD_NAME"],
+      output_name: ENV["VERSIONED_BUILD_NAME"],
       clean: true,
       xcargs: settings_to_override,
       export_options: {
         method: "app-store",
         provisioningProfiles: {
-          APP_ID => APP_PROFILE
+          ENV["APP_ID"] => ENV["APPLE_PROVISION_PROFILE"]
         }
       }
     )
@@ -98,7 +104,7 @@ platform :ios do
     firebase_app_distribution(
       app: "1:717031788374:ios:be121905ee687dea4650f7",
       groups: "internal-testers",
-      ipa_path: File.join(ENV["BUILD_PATH"], ENV["BUILD_NAME"] + ".ipa"),
+      ipa_path: ENV["IOS_BUILD_PATH"],
       firebase_cli_path: "./node_modules/.bin/firebase",
       firebase_cli_token: ENV["FIREBASE_CLI_TOKEN"]
     )

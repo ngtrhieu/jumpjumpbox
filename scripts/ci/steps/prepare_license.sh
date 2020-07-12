@@ -4,7 +4,7 @@
 
 set -e
 
-echo :: Running step $0
+echo -e '\033[0;32m:: Running step $0'
 
 mkdir -p /root/.cache/unity3d
 mkdir -p /root/.local/share/unity3d/Unity/
@@ -12,14 +12,14 @@ mkdir -p /root/.local/share/unity3d/Unity/
 UPPERCASE_BUILD_TARGET=${BUILD_TARGET^^}
 
 if [ $UPPERCASE_BUILD_TARGET = "ANDROID" ]; then
-    if [ -n $ANDROID_KEYSTORE_BASE64 ]; then
-        echo '$ANDROID_KEYSTORE_BASE64 found, decoding content into keystore.keystore'
-        echo $ANDROID_KEYSTORE_BASE64 | base64 --decode >keystore.keystore
+    if [ -n $GOOGLE_KEYSTORE_BASE64 ]; then
+        echo '$GOOGLE_KEYSTORE_BASE64 found, decoding content into keystore.keystore'
+        echo $GOOGLE_KEYSTORE_BASE64 | base64 --decode >keystore.keystore
     elif [ -f "$(pwd)/secrets/keystore.keystore" ]; then
         echo 'Keystore found inside secrets folder, copy to root folder.'
         cat $(pwd)/secrets/keystore.keystore >keystore.keystore
     else
-        echo 'ANDROID_KEYSTORE'" env var not found, building with Unity's default debug keystore"
+        echo 'GOOGLE_KEYSTORE'" env var not found, building with Unity's default debug keystore"
     fi
 fi
 
@@ -35,4 +35,4 @@ fi
 echo "Writing $LICENSE to license file /root/.local/share/unity3d/Unity/Unity_lic.ulf"
 echo "${!LICENSE}" | tr -d '\r' >/root/.local/share/unity3d/Unity/Unity_lic.ulf
 
-echo :: Step $0 completed
+echo -e '\033[0;32m:: Step $0 completed'

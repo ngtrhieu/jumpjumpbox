@@ -36,8 +36,8 @@ fi
 
 if grep $CODE_COVERAGE_PACKAGE $PACKAGE_MANIFEST_PATH; then
   cat $RESULT_PATH/$TEST_PLATFORM-coverage/Report/Summary.xml | grep Linecoverage
-  mv $RESULT_PATH/$TEST_PLATFORM-coverage/$UNITY_PROJECT-opencov/*Mode/TestCoverageResults_*.xml $RESULT_PATH/$TEST_PLATFORM-coverage/coverage.xml
-  rm -r $RESULT_PATH/$TEST_PLATFORM-coverage/$UNITY_PROJECT-opencov/
+  mv $RESULT_PATH/$TEST_PLATFORM-coverage/unity-opencov/*Mode/TestCoverageResults_*.xml $RESULT_PATH/$TEST_PLATFORM-coverage/coverage.xml
+  rm -r $RESULT_PATH/$TEST_PLATFORM-coverage/unity-opencov/
   mv $PROJECT_PATH/CodeCoverage $RESULT_PATH/CodeCoverage
 else
   {
@@ -47,5 +47,5 @@ fi
 
 cat $RESULT_PATH/$TEST_PLATFORM-results.xml | grep test-run | grep Passed
 
-echo :: Step $0 completed. exiting $UNITY_EXIT_CODE
+echo -e '\033[0;32m:: Step $0 completed'. exiting $UNITY_EXIT_CODE
 exit $UNITY_EXIT_CODE

@@ -2,7 +2,13 @@
 
 # Create aws profile
 
-echo :: Generating aws profile
+if [ -n $AWS_ACCESS_KEY ] || [ -n $AWS_ACCESS_SECRET ]; then
+  echo -e '\033[0;31m:: Failed to generate AWS profile'
+  echo -e '\033[0;31mEither AWS_ACCESS_KEY or AWS_ACCESS_SECRET is not set.'
+  exit 1
+fi
+
+echo :: Generating aws profile...
 
 mkdir -p ~/.aws
 

@@ -9,9 +9,9 @@ source ./scripts/ci/steps/env.sh
 if [ -f './secrets/xcode_env.sh' ]; then
   source ./secrets/xcode_env.sh
 else
-  echo '
-Cannot find ./secrets/xcode_env.sh file!!
-Please create ./secrets/xcode_env.sh file which these information:
+  echo -e'
+\033[0;31mCannot find ./secrets/xcode_env.sh file!!\033[0m
+\033[1;33mPlease create ./secrets/xcode_env.sh file which these information:
 
 export AWS_ACCESS_KEY=[actual value]
 export AWS_ACCESS_SECRET=[actual value]

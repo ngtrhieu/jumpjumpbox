@@ -12,13 +12,12 @@ docker run \
     -e BUILD_TARGET \
     -e UNITY_USERNAME \
     -e UNITY_PASSWORD \
-    -e ANDROID_KEYSTORE \
-    -e ANDROID_KEYSTORE_PASS \
-    -e ANDROID_KEY_ALIAS_NAME \
-    -e ANDROID_KEY_ALIAS_PASS \
+    -e GOOGLE_KEYSTORE_PASS \
+    -e GOOGLE_KEY_ALIAS_NAME \
+    -e GOOGLE_KEY_ALIAS_PASS \
     -e UNITY_PROJECT_VERSION \
-    -e UNITY_BUILD_PROFILE \
-    -e TRAVIS_BRANCH \
+    -e UNITY_ADDRESSABLE_PROFILE \
+    -e GIT_BRANCH \
     -w /project/ \
     -v $(pwd):/project/ \
     $IMAGE_NAME \
