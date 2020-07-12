@@ -91,6 +91,17 @@ before_cache:
   - mkdir -p $HOME/docker
   - docker images -a --filter='dangling=false' --format '{{.Repository}}:{{.Tag}} {{.ID}}' | xargs -n 2 -t bash -c 'test -e $HOME/docker/$1.tar.gz || docker save $0 | gzip -2 > $HOME/docker/$1.tar.gz'
 
+_test_job: &test_job
+  stage: test
+  services:
+    - docker
+  env: TEST_PLATFORM=editmode IMAGE_NAME=ngtrhieu/unity3d
+  script:
+    - chmod +x ./scripts/ci_test.sh
+    - ./scripts/ci_test.sh
+  after_script:
+    - aws sync cp ./test_results s3://${BUILD_BUCKET}/report_${TEST_PLATFORM}_${BUILD_TARGET}_${SEMATIC_VERSION}_{TRAVIS_BUILD_NUMBER}
+
 _build_job: &build_job
   stage: build
   services:
@@ -99,17 +110,15 @@ _build_job: &build_job
     - chmod +x ./scripts/ci_build.sh
     - ./scripts/ci_build.sh
   after_success:
-    - aws s3 sync ./builds s3://${BUILD_BUCKET}/${BUILD_TARGET}_${TRAVIS_BUILD_NUMBER}
+    - aws s3 sync ./builds s3://${BUILD_BUCKET}/${BUILD_TARGET}_${SEMATIC_VERSION}_${TRAVIS_BUILD_NUMBER}
     - aws s3 sync ./unity/ServerData s3://${CONTENT_BUCKET}
 
 _deploy_job: &deploy_job
   stage: deploy
   script:
-    # Download build artifact
     - mkdir -p ./builds
-    - aws s3 cp s3://${BUILD_BUCKET}/${BUILD_TARGET}_${TRAVIS_BUILD_NUMBER} ./builds --recursive
+    - aws s3 cp s3://${BUILD_BUCKET}/${BUILD_TARGET}_${SEMATIC_VERSION}_${TRAVIS_BUILD_NUMBER} ./builds --recursive
 
-    # Fastlane distribute
     - chmod +x ./scripts/ci/steps/env.sh
     - source ./scripts/ci/steps/env.sh
     - |
@@ -122,15 +131,12 @@ _deploy_job: &deploy_job
 jobs:
   include:
     - name: EditMode Test
-      stage: test
-      services:
-        - docker
       env: TEST_PLATFORM=editmode IMAGE_NAME=ngtrhieu/unity3d
-      script:
-        - chmod +x ./scripts/ci_test.sh
-        - ./scripts/ci_test.sh
-      after_script:
-        - aws sync cp ./test_results s3://${BUILD_BUCKET}/report_${TEST_PLATFORM}_${BUILD_TARGET}_${TRAVIS_BUILD_NUMBER}
+      <<: *test_job
+
+    # - name: EditMode Test
+    #   env: TEST_PLATFORM=playmode IMAGE_NAME=ngtrhieu/unity3d
+    #   <<: *test_job
 
     - name: Build Android
       env: BUILD_TARGET=Android IMAGE_NAME=ngtrhieu/unity3d-android
@@ -147,17 +153,18 @@ jobs:
       language: objective-c
       env: BUILD_TARGET=iOS
       script:
-        - aws s3 cp s3://${BUILD_BUCKET}/${BUILD_TARGET}_${TRAVIS_BUILD_NUMBER} ./builds --recursive
+        - aws s3 cp s3://${BUILD_BUCKET}/${BUILD_TARGET}_${SEMATIC_VERSION}_${TRAVIS_BUILD_NUMBER} ./builds --recursive
         - chmod +x ./scripts/ci/steps/env.sh
         - source ./scripts/ci/steps/env.sh
 
-        # Need to chmod +x for these .sh files inside build folders
+        # Since these .sh files are created from another machine
+        # Need to chmod +x these
         - chmod +x ./builds/${BUILD_TARGET}/${BUILD_NAME}/MapFileParser.sh
         - chmod +x ./builds/${BUILD_TARGET}/${BUILD_NAME}/process_symbols.sh
 
         - bundle exec fastlane ios archive
       after_script:
-        - aws s3 sync ./builds s3://${BUILD_BUCKET}/${BUILD_TARGET}_${TRAVIS_BUILD_NUMBER}
+        - aws s3 sync ./builds s3://${BUILD_BUCKET}/${BUILD_TARGET}_${SEMATIC_VERSION}_{TRAVIS_BUILD_NUMBER}
 
     - name: Deploy Android
       env: BUILD_TARGET=Android
