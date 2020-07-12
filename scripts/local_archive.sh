@@ -18,7 +18,7 @@ export AWS_ACCESS_SECRET=[actual value]
 export MATCH_PASSWORD=[actual value]
 
 Make sure the AWS profile used have S3 read access to the bucket where match ecryped xcode provision profile.
-Make sure MATCH_PASSWORd is the password used to encrypt xcode provisional profile.
+Make sure MATCH_PASSWORd is the password used to encrypt xcode provisional profile.\033[0m
 '
   exit 1
 fi

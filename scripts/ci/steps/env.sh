@@ -9,7 +9,7 @@
 
 set -e
 
-echo -e '\033[0;32m:: Running step $0'
+echo -e "\033[0;32m:: Running step $0\033[0m"
 
 ####################
 # build settings
@@ -81,7 +81,7 @@ export IOS_XCODE_PROJECT_PATH="${BUILD_PATH}/${VERSIONED_BUILD_NAME}"
 
 # secrets
 export FIREBASE_CLI_TOKEN=${FIREBASE_CLI_TOKEN:-"$(cat ./secrets/firebase.token)"}
-source chmod +x ./secrets/passwords.sh && ./secrets/passwords.sh
+source ./secrets/credentials.sh
 MATCH_PASSWORD=$APPLE_PROVISION_PROFILE_PASSWORD
 
-echo -e '\033[0;32m:: Step $0 completed'
+echo -e "\033[0;32m:: Step $0 completed\033[0m"

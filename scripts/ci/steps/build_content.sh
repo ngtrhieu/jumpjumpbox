@@ -5,7 +5,7 @@
 
 set -e
 
-echo -e '\033[0;32m:: Running step $0'
+echo -e "\033[0;32m:: Running step $0\033[0m\033[0m"
 
 echo "Building content $BUILD_NAME for $BUILD_TARGET"
 
@@ -36,8 +36,8 @@ fi
 echo "Checking content folder $PROJECT_PATH/ServerData..."
 ls -la $PROJECT_PATH/ServerData
 if [ -z "$(ls -A $PROJECT_PATH/ServerData)" ]; then
-  echo -e "\033[0;31mContent folder empty. Exit 1"
+  echo -e "\033[0;31mContent folder empty. Exit 1\033[0m"
   exit 1
 fi
 
-echo -e '\033[0;32m:: Step $0 completed'
+echo -e "\033[0;32m:: Step $0 completed\033[0m"

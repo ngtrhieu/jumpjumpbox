@@ -2,7 +2,7 @@
 
 set -e
 
-echo :: Running $0
+echo -e "\033[0;32m:: Running $0\033[0m"
 
 dir=$(dirname ${BASH_SOURCE})
 
@@ -17,4 +17,4 @@ docker run \
   $IMAGE_NAME \
   /bin/bash -c $dir/ci/test.sh
 
-echo :: $0 stopped
+echo -e "\033[0;32m:: $0 completed\033[0m"

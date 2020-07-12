@@ -3,8 +3,8 @@
 # Create aws profile
 
 if [ -n $AWS_ACCESS_KEY ] || [ -n $AWS_ACCESS_SECRET ]; then
-  echo -e '\033[0;31m:: Failed to generate AWS profile'
-  echo -e '\033[0;31mEither AWS_ACCESS_KEY or AWS_ACCESS_SECRET is not set.'
+  echo -e "\033[0;31m:: Failed to generate AWS profile\033[0m"
+  echo -e "\033[0;31mEither AWS_ACCESS_KEY or AWS_ACCESS_SECRET is not set.\033[0m"
   exit 1
 fi
 

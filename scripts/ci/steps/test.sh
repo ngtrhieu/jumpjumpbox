@@ -5,7 +5,9 @@
 
 set -x
 
-echo "Testing $BUILD_NAME for $TEST_PLATFORM"
+echo -e "\033[0;32m:: Running step $0\033[0m"
+
+echo ":: Testing $BUILD_NAME $TEST_PLATFORM"
 
 CODE_COVERAGE_PACKAGE="com.unity.testtools.codecoverage"
 PACKAGE_MANIFEST_PATH="Packages/manifest.json"
@@ -47,5 +49,5 @@ fi
 
 cat $RESULT_PATH/$TEST_PLATFORM-results.xml | grep test-run | grep Passed
 
-echo -e '\033[0;32m:: Step $0 completed'. exiting $UNITY_EXIT_CODE
+echo -e "\033[0;32m:: Step $0 completed\033[0m"
 exit $UNITY_EXIT_CODE

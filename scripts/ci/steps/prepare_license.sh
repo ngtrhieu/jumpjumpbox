@@ -4,7 +4,7 @@
 
 set -e
 
-echo -e '\033[0;32m:: Running step $0'
+echo -e "\033[0;32m:: Running step $0\033[0m"
 
 mkdir -p /root/.cache/unity3d
 mkdir -p /root/.local/share/unity3d/Unity/
@@ -35,4 +35,4 @@ fi
 echo "Writing $LICENSE to license file /root/.local/share/unity3d/Unity/Unity_lic.ulf"
 echo "${!LICENSE}" | tr -d '\r' >/root/.local/share/unity3d/Unity/Unity_lic.ulf
 
-echo -e '\033[0;32m:: Step $0 completed'
+echo -e "\033[0;32m:: Step $0 completed\033[0m"

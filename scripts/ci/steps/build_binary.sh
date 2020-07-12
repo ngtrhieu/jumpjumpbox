@@ -5,7 +5,7 @@
 
 set -e
 
-echo -e '\033[0;32m:: Running step $0'
+echo -e "\033[0;32m:: Running step $0\033[0m"
 
 echo ":: Building $BUILD_NAME for $BUILD_TARGET"
 mkdir -p $BUILD_PATH
@@ -36,8 +36,8 @@ fi
 echo "Checking build path $BUILD_PATH..."
 ls -la $BUILD_PATH
 if [ -z "$(ls -A $BUILD_PATH)" ]; then
-  echo -e "\033[0;31mBuild folder empty. Exit 1"
+  echo -e "\033[0;31mBuild folder empty. Exit 1\033[0m"
   exit 1
 fi
 
-echo -e '\033[0;32m:: Step $0 completed'
+echo -e "\033[0;32m:: Step $0 completed\033[0m"
