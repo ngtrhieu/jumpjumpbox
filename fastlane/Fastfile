@@ -19,9 +19,9 @@
 # i.e: profile name is in the format "match ${profile_type} ${app_id}"
 def determine_ios_export_method(provision_profile)
   profile = provision_profile.downcase
-  return ({:match => "appstore", :gym => "app-store"}) if profile.start_with? "match appstore"
-  return ({:match => "adhoc", :gym => "ad-hoc"}) if profile.start_with? "match adhoc"
-  return ({:match => "development", :gym => "development"}) if profile.start_with? "match development"
+  return ({:match => "appstore", :gym => "app-store", :code_sign => "iPhone Distribution"}) if profile.start_with? "match appstore"
+  return ({:match => "adhoc", :gym => "ad-hoc", :code_sign => "iPhone Distribution"}) if profile.start_with? "match adhoc"
+  return ({:match => "development", :gym => "development", :code_sign => "iPhone Development"}) if profile.start_with? "match development"
   return nil
 end
 
@@ -83,7 +83,7 @@ platform :ios do
       path: XCODE_PROJECT_PATH,
       targets: "Unity-iPhone",
       use_automatic_signing: false,
-      code_sign_identity: ENV["APPLE_CODE_SIGN_IDENTITY"],
+      code_sign_identity: export_options[:code_sign],
       team_id: ENV["APPLE_TEAM_ID"],
       profile_name: ENV["APPLE_PROVISION_PROFILE"]
     )
