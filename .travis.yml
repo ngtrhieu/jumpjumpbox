@@ -90,7 +90,7 @@ _test_job: &test_job
     - chmod +x ./scripts/ci_test.sh
     - ./scripts/ci_test.sh
   after_script:
-    - aws sync cp ./test_results s3://${BUILD_BUCKET}/report_${TEST_PLATFORM}_${BUILD_TARGET}_${SEMATIC_VERSION}_{TRAVIS_BUILD_NUMBER}
+    - aws s3 sync ./test_results s3://${BUILD_BUCKET}/report_${TEST_PLATFORM}_${BUILD_TARGET}_${SEMATIC_VERSION}_{TRAVIS_BUILD_NUMBER}
 
 _build_job: &build_job
   stage: build
