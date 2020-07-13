@@ -81,7 +81,7 @@ export IOS_XCODE_PROJECT_PATH="${BUILD_PATH}/${VERSIONED_BUILD_NAME}"
 
 # secrets
 export FIREBASE_CLI_TOKEN=${FIREBASE_CLI_TOKEN:-"$(cat ./secrets/firebase.token)"}
-source ./secrets/credentials.sh
+if [ -f ./secrets/credentials.sh ]; then source ./secrets/credentials.sh; fi
 MATCH_PASSWORD=$APPLE_PROVISION_PROFILE_PASSWORD
 
 echo -e "\033[0;32m:: Step $0 completed\033[0m"
