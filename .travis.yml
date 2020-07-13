@@ -81,6 +81,8 @@ before_script:
   - openssl aes-256-cbc -K $encrypted_dbcbaea3fa1e_key -iv $encrypted_dbcbaea3fa1e_iv -in ./secrets/keystore.keystore.enc -out ./secrets/keystore.keystore -d
   - openssl aes-256-cbc -K $encrypted_8026183efba4_key -iv $encrypted_8026183efba4_iv -in ./secrets/Unity_lic.ulf.enc -out ./secrets/Unity_lic.ulf -d
 
+  - source ./scripts/ci/steps/env.sh
+
 _test_job: &test_job
   stage: test
   services:
