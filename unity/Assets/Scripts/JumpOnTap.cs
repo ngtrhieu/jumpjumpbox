@@ -1,5 +1,4 @@
 ﻿using UnityEngine;
-using UnityEngine.InputSystem;
 
 public class JumpOnTap : MonoBehaviour {
 
@@ -11,14 +10,11 @@ public class JumpOnTap : MonoBehaviour {
   }
 
   void Update() {
-
-    var shouldJump = (
-      Keyboard.current != null && Keyboard.current.spaceKey.wasPressedThisFrame ||
-      Mouse.current != null && Mouse.current.leftButton.wasPressedThisFrame ||
-      Touchscreen.current != null && Touchscreen.current.primaryTouch.tap.wasPressedThisFrame
-    );
-
-    if (rb != null && shouldJump) {
+    if (rb != null && (
+            Input.GetKeyDown(KeyCode.Space) ||
+            Input.GetMouseButtonDown(0)
+        )
+    ) {
       rb.AddForce(Vector3.up * strength);
     }
   }
