@@ -21,7 +21,7 @@ def determine_ios_export_method(provision_profile)
   profile = provision_profile.downcase
   return ({:match => "appstore", :gym => "app-store"}) if profile.start_with? "match appstore"
   return ({:match => "adhoc", :gym => "ad-hoc"}) if profile.start_with? "match adhoc"
-  return ({:match => "development", :gym => "development"}) if profile.start_with? "match adhoc"
+  return ({:match => "development", :gym => "development"}) if profile.start_with? "match development"
   return nil
 end
 
