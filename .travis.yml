@@ -81,6 +81,7 @@ before_script:
   - openssl aes-256-cbc -K $encrypted_dbcbaea3fa1e_key -iv $encrypted_dbcbaea3fa1e_iv -in ./secrets/keystore.keystore.enc -out ./secrets/keystore.keystore -d
   - openssl aes-256-cbc -K $encrypted_8026183efba4_key -iv $encrypted_8026183efba4_iv -in ./secrets/Unity_lic.ulf.enc -out ./secrets/Unity_lic.ulf -d
 
+  - chmod +x ./scripts/ci/steps/env.sh
   - source ./scripts/ci/steps/env.sh
 
 _test_job: &test_job
@@ -146,8 +147,6 @@ jobs:
       env: BUILD_TARGET=iOS
       script:
         - aws s3 cp s3://${BUILD_BUCKET}/${BUILD_TARGET}_${SEMATIC_VERSION}_${TRAVIS_BUILD_NUMBER} ${BUILD_PATH} --recursive
-        - chmod +x ./scripts/ci/steps/env.sh
-        - source ./scripts/ci/steps/env.sh
 
         # Since these .sh files are created from another machine
         # Need to chmod +x these

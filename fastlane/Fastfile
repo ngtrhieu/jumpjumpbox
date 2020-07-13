@@ -13,6 +13,18 @@
 # Uncomment the line if you want fastlane to automatically update itself
 # update_fastlane
 
+
+# simple function to return export_options back based on provision_profile name
+# assume that `match` named the provision_profile name
+# i.e: profile name is in the format "match ${profile_type} ${app_id}"
+def determine_ios_export_method(provision_profile)
+  profile = provision_profile.downcase
+  return ({:match => "appstore", :gym => "app-store"}) if profile.start_with? "match appstore"
+  return ({:match => "adhoc", :gym => "ad-hoc"}) if profile.start_with? "match adhoc"
+  return ({:match => "development", :gym => "development"}) if profile.start_with? "match adhoc"
+  return nil
+end
+
 default_platform(:android)
 
 platform :android do
@@ -35,6 +47,8 @@ platform :ios do
     KEYCHAIN_NAME = "temp_keychain"
     KEYCHAIN_PASSWORD = "temp_password"
     KEYCHAIN_PATH = "~/Library/Keychains/#{KEYCHAIN_NAME}-db"
+
+    export_options = determine_ios_export_method(ENV["APPLE_PROVISION_PROFILE"])
 
     delete_keychain(name: KEYCHAIN_NAME) if File.exist?(File.expand_path(KEYCHAIN_PATH))
     create_keychain(
@@ -59,7 +73,7 @@ platform :ios do
       username: ENV["APPLE_USERNAME"],
       team_id: ENV["APPLE_TEAM_ID"],
 
-      type: "appstore",
+      type: export_options[:match],
       readonly: is_ci,
       keychain_name: KEYCHAIN_NAME,
       keychain_password: KEYCHAIN_PASSWORD,
@@ -88,7 +102,7 @@ platform :ios do
       clean: true,
       xcargs: settings_to_override,
       export_options: {
-        method: "app-store",
+        method: export_options[:gym],
         provisioningProfiles: {
           ENV["APP_ID"] => ENV["APPLE_PROVISION_PROFILE"]
         }
