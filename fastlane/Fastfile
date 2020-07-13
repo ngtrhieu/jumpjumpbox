@@ -19,9 +19,9 @@
 # i.e: profile name is in the format "match ${profile_type} ${app_id}"
 def determine_ios_export_method(provision_profile)
   profile = provision_profile.downcase
-  return ({:match => "appstore", :gym => "app-store", :code_sign => "iPhone Distribution"}) if profile.start_with? "match appstore"
-  return ({:match => "adhoc", :gym => "ad-hoc", :code_sign => "iPhone Distribution"}) if profile.start_with? "match adhoc"
-  return ({:match => "development", :gym => "development", :code_sign => "iPhone Development"}) if profile.start_with? "match development"
+  return ({:match => "appstore", :gym => "app-store", :code_sign => "iOS Distribution"}) if profile.start_with? "match appstore"
+  return ({:match => "adhoc", :gym => "ad-hoc", :code_sign => "iOS Distribution"}) if profile.start_with? "match adhoc"
+  return ({:match => "development", :gym => "development", :code_sign => "iOS Developer"}) if profile.start_with? "match development"
   return nil
 end
 
