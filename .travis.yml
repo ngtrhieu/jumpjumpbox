@@ -100,14 +100,14 @@ _build_job: &build_job
     - chmod +x ./scripts/ci_build.sh
     - ./scripts/ci_build.sh
   after_success:
-    - aws s3 sync ./builds s3://${BUILD_BUCKET}/${BUILD_TARGET}_${SEMATIC_VERSION}_${TRAVIS_BUILD_NUMBER}
+    - aws s3 sync ${BUILD_PATH} s3://${BUILD_BUCKET}/${BUILD_TARGET}_${SEMATIC_VERSION}_${TRAVIS_BUILD_NUMBER}
     - aws s3 sync ./unity/ServerData s3://${CONTENT_BUCKET}
 
 _deploy_job: &deploy_job
   stage: deploy
   script:
-    - mkdir -p ./builds
-    - aws s3 cp s3://${BUILD_BUCKET}/${BUILD_TARGET}_${SEMATIC_VERSION}_${TRAVIS_BUILD_NUMBER} ./builds --recursive
+    - mkdir -p ${BUILD_PATH}
+    - aws s3 cp s3://${BUILD_BUCKET}/${BUILD_TARGET}_${SEMATIC_VERSION}_${TRAVIS_BUILD_NUMBER} ${BUILD_PATH} --recursive
 
     - chmod +x ./scripts/ci/steps/env.sh
     - source ./scripts/ci/steps/env.sh
@@ -143,18 +143,18 @@ jobs:
       language: objective-c
       env: BUILD_TARGET=iOS
       script:
-        - aws s3 cp s3://${BUILD_BUCKET}/${BUILD_TARGET}_${SEMATIC_VERSION}_${TRAVIS_BUILD_NUMBER} ./builds --recursive
+        - aws s3 cp s3://${BUILD_BUCKET}/${BUILD_TARGET}_${SEMATIC_VERSION}_${TRAVIS_BUILD_NUMBER} ${BUILD_PATH} --recursive
         - chmod +x ./scripts/ci/steps/env.sh
         - source ./scripts/ci/steps/env.sh
 
         # Since these .sh files are created from another machine
         # Need to chmod +x these
-        - chmod +x ./builds/${BUILD_TARGET}/${BUILD_NAME}/MapFileParser.sh
-        - chmod +x ./builds/${BUILD_TARGET}/${BUILD_NAME}/process_symbols.sh
+        - chmod +x ${IOS_XCODE_PROJECT_PATH}/MapFileParser.sh
+        - chmod +x ${IOS_XCODE_PROJECT_PATH}/process_symbols.sh
 
         - bundle exec fastlane ios archive
       after_script:
-        - aws s3 sync ./builds s3://${BUILD_BUCKET}/${BUILD_TARGET}_${SEMATIC_VERSION}_${TRAVIS_BUILD_NUMBER}
+        - aws s3 sync ${BUILD_PATH} s3://${BUILD_BUCKET}/${BUILD_TARGET}_${SEMATIC_VERSION}_${TRAVIS_BUILD_NUMBER}
 
     - name: Deploy Android
       env: BUILD_TARGET=Android
