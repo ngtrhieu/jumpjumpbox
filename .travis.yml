@@ -88,7 +88,6 @@ _test_job: &test_job
   stage: test
   services:
     - docker
-  env: TEST_PLATFORM=editmode IMAGE_NAME=ngtrhieu/unity3d
   script:
     - chmod +x ./scripts/ci_test.sh
     - ./scripts/ci_test.sh
