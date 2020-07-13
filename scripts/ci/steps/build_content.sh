@@ -15,7 +15,7 @@ ${UNITY_EXECUTABLE:-xvfb-run --auto-servernum --server-args='-screen 0 640x480x2
   -batchmode \
   -buildTarget $BUILD_TARGET \
   -customBuildTarget $BUILD_TARGET \
-  -customBuildName $BUILD_NAME \
+  -customBuildName $VERSIONED_BUILD_NAME \
   -customBuildPath $BUILD_PATH \
   -addressableProfile $UNITY_ADDRESSABLE_PROFILE \
   -executeMethod BuildContentCommand.PerformBuild \
