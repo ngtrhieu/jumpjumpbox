@@ -90,7 +90,7 @@ _test_job: &test_job
     - chmod +x ./scripts/ci_test.sh
     - ./scripts/ci_test.sh
   after_script:
-    - aws s3 sync ./test_results s3://${BUILD_BUCKET}/report_${TEST_PLATFORM}_${BUILD_TARGET}_${SEMATIC_VERSION}_{TRAVIS_BUILD_NUMBER}
+    - aws s3 sync ./test_results s3://${BUILD_BUCKET}/report_${TEST_PLATFORM}_${BUILD_TARGET}_${SEMATIC_VERSION}_${TRAVIS_BUILD_NUMBER}
 
 _build_job: &build_job
   stage: build
@@ -124,9 +124,9 @@ jobs:
       env: TEST_PLATFORM=editmode IMAGE_NAME=ngtrhieu/unity3d
       <<: *test_job
 
-    # - name: EditMode Test
-    #   env: TEST_PLATFORM=playmode IMAGE_NAME=ngtrhieu/unity3d
-    #   <<: *test_job
+    - name: PlayMode Test
+      env: TEST_PLATFORM=playmode IMAGE_NAME=ngtrhieu/unity3d
+      <<: *test_job
 
     - name: Build Android
       env: BUILD_TARGET=Android IMAGE_NAME=ngtrhieu/unity3d-android
@@ -154,7 +154,7 @@ jobs:
 
         - bundle exec fastlane ios archive
       after_script:
-        - aws s3 sync ./builds s3://${BUILD_BUCKET}/${BUILD_TARGET}_${SEMATIC_VERSION}_{TRAVIS_BUILD_NUMBER}
+        - aws s3 sync ./builds s3://${BUILD_BUCKET}/${BUILD_TARGET}_${SEMATIC_VERSION}_${TRAVIS_BUILD_NUMBER}
 
     - name: Deploy Android
       env: BUILD_TARGET=Android
