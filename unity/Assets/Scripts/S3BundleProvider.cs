@@ -149,6 +149,10 @@ namespace Autumn.Addressables {
 
     private UnityWebRequest CreateWebRequest(IResourceLocation location) {
       var url = provideHandle.ResourceManager.TransformInternalId(location);
+      if (retries > options.RetryCount / 2.0f) {
+        url = ComputeSecondaryLocation(url);
+      }
+
       if (options == null) {
         return UnityWebRequestAssetBundle.GetAssetBundle(url);
       }
@@ -175,5 +179,19 @@ namespace Autumn.Addressables {
       webRequest.disposeDownloadHandlerOnDispose = false;
       return webRequest;
     }
+
+    ///<summary>
+    ///Compute the secondary location to download the bundle, in the event the original location failed.
+    ///</summary>
+    public static string ComputeSecondaryLocation(string path) {
+      // Assume the fallback server is hosted on the mirrored bucket.
+      var uri = new System.UriBuilder(path);
+      var hostParts = uri.Host.Split('.');
+      hostParts[0] = hostParts[0] + "-bck";
+      uri.Host = string.Join(".", hostParts);
+
+      return uri.ToString();
+    }
   }
+
 }
