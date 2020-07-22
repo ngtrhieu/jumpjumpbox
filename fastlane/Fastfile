@@ -44,8 +44,8 @@ platform :ios do
 
     XCODE_PROJECT_PATH = File.join(ENV["IOS_XCODE_PROJECT_PATH"], "Unity-iPhone.xcodeproj")
 
-    KEYCHAIN_NAME = "temp_keychain"
-    KEYCHAIN_PASSWORD = "temp_password"
+    KEYCHAIN_NAME = "keychain"
+    KEYCHAIN_PASSWORD = "password"
     KEYCHAIN_PATH = "~/Library/Keychains/#{KEYCHAIN_NAME}-db"
 
     export_options = determine_ios_export_method(ENV["APPLE_PROVISION_PROFILE"])
