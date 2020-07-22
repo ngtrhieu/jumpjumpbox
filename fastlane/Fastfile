@@ -59,6 +59,13 @@ platform :ios do
       lock_when_sleeps: false,
       add_to_search_list: true
     )
+
+    unlock_keychain(
+      path: KEYCHAIN_PATH,
+      password: KEYCHAIN_PASSWORD,
+      add_to_search_list: :replace,
+      set_default: true
+    )
     
     match(
       storage_mode: "s3",
