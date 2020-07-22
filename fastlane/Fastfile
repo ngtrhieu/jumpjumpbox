@@ -112,7 +112,7 @@ platform :ios do
         method: export_options[:gym],
         provisioningProfiles: {
           ENV["APP_ID"] => ENV["APPLE_PROVISION_PROFILE"]
-        }
+        },
         uploadBitcode: false,
         uploadSymbols: false,
         compileBitcode: false,
