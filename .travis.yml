@@ -122,18 +122,18 @@ _deploy_job: &deploy_job
 
 jobs:
   include:
-    - name: EditMode Test
-      env: TEST_PLATFORM=editmode IMAGE_NAME=ngtrhieu/unity3d
-      <<: *test_job
+    # - name: EditMode Test
+    #   env: TEST_PLATFORM=editmode IMAGE_NAME=ngtrhieu/unity3d
+    #   <<: *test_job
 
     # Disable PlayMode Test due to limited RAM resources on CI server
     # - name: PlayMode Test
     #   env: TEST_PLATFORM=playmode IMAGE_NAME=ngtrhieu/unity3d
     #   <<: *test_job
 
-    - name: Build Android
-      env: BUILD_TARGET=Android IMAGE_NAME=ngtrhieu/unity3d-android
-      <<: *build_job
+    # - name: Build Android
+    #   env: BUILD_TARGET=Android IMAGE_NAME=ngtrhieu/unity3d-android
+    #   <<: *build_job
 
     - name: Build iOS
       env: BUILD_TARGET=iOS IMAGE_NAME=ngtrhieu/unity3d-ios
@@ -157,9 +157,9 @@ jobs:
       after_script:
         - aws s3 sync ${BUILD_PATH} s3://${BUILD_BUCKET}/${BUILD_TARGET}_${SEMATIC_VERSION}_${TRAVIS_BUILD_NUMBER}
 
-    - name: Deploy Android
-      env: BUILD_TARGET=Android
-      <<: *deploy_job
+    # - name: Deploy Android
+    #   env: BUILD_TARGET=Android
+    #   <<: *deploy_job
 
     - name: Deploy iOS
       env: BUILD_TARGET=iOS
