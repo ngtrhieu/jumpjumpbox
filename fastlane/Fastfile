@@ -120,7 +120,7 @@ platform :ios do
     )
 
     delete_keychain(
-      name: "temp_keychain"
+      name: KEYCHAIN_NAME
     )
   end
 
