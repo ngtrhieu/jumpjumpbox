@@ -31,10 +31,6 @@ echo "BUILD_NAME ${BUILD_NAME}"
 export BUILD_APP_BUNDLE=${BUILD_APP_BUNDLE:-"false"}
 echo "BUILD_APP_BUNDLE ${BUILD_APP_BUNDLE}"
 
-# The current git branch
-export GIT_BRANCH=${GIT_BRANCH:-${TRAVIS_BRANCH:-"$(git rev-parse --abbrev-ref HEAD)"}}
-echo "GIT_BRANCH ${GIT_BRANCH}"
-
 # The bucket to upload builds and test reports to
 export BUILD_BUCKET=${BUILD_BUCKET:-"jumpjumpbox-builds"}
 echo "BUILD_BUCKET ${BUILD_BUCKET}"
@@ -44,7 +40,7 @@ export CONTENT_BUCKET=${CONTENT_BUCKET:-"jumpjumpbox-assets"}
 echo "CONTENT_BUCKET ${CONTENT_BUCKET}"
 
 # Unity addressable profile
-export UNITY_ADDRESSABLE_PROFILE=${UNITY_ADDRESSABLE_PROFILE:-"$(node $(pwd)/scripts/utils/get_addressable_profile.js)"}
+export UNITY_ADDRESSABLE_PROFILE=${UNITY_ADDRESSABLE_PROFILE:-"CI"}
 echo "UNITY_ADDRESSABLE_PROFILE ${UNITY_ADDRESSABLE_PROFILE}"
 
 # Unity license content
@@ -78,9 +74,13 @@ echo "SEMATIC_VERSION ${SEMATIC_VERSION}"
 export APP_ID="$(node $(pwd)/scripts/utils/get_project_app_id.js)"
 echo "APP_ID ${APP_ID}"
 
-# Unity build bundle path (should match whatever path set inside Unity addressable profile)
-export UNITY_CONTENT_PATH="$UNITY_PATH/ServerData/v$SEMATIC_VERSION/$BUILD_TARGET"
-echo "UNITY_CONTENT_PATH ${UNITY_CONTENT_PATH}"
+# Unity addressable's RemoteBuildPath
+export UNITY_ADDRESSABLE_REMOTE_BUILD_PATH="ServerData/${BUILD_TARGET}/v${SEMATIC_VERSION}"
+echo "UNITY_ADDRESSABLE_REMOTE_BUILD_PATH ${UNITY_ADDRESSABLE_REMOTE_BUILD_PATH}"
+
+# Unity addressable's RemoteLoadPath
+export UNITY_ADDRESSABLE_REMOTE_LOAD_PATH="https://${CONTENT_BUCKET}.s3-${AWS_REGION:-"ap-southeast-1"}.amazonaws.com/${BUILD_TARGET}/v${SEMATIC_VERSION}"
+echo "UNITY_ADDRESSABLE_REMOTE_LOAD_PATH ${UNITY_ADDRESSABLE_REMOTE_LOAD_PATH}"
 
 # Absolute path to the build file/xcode project folder
 ANDROID_EXTENSION=$([ $BUILD_APP_BUNDLE = "false" ] && echo apk || echo aab)

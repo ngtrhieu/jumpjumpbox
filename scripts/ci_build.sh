@@ -17,7 +17,8 @@ docker run \
     -e GOOGLE_KEY_ALIAS_PASS \
     -e UNITY_PROJECT_VERSION \
     -e UNITY_ADDRESSABLE_PROFILE \
-    -e GIT_BRANCH \
+    -e UNITY_ADDRESSABLE_REMOTE_BUILD_PATH \
+    -e UNITY_ADDRESSABLE_REMOTE_LOAD_PATH \
     -w /project/ \
     -v $(pwd):/project/ \
     $IMAGE_NAME \

@@ -22,12 +22,16 @@ const addressableAssetSettings = yaml.documents[Object.keys(yaml.documents)[0]];
 
 // Find the profile settings for CI
 const ciProfile = addressableAssetSettings.MonoBehaviour.m_ProfileSettings.m_Profiles.filter(
-  (profile) => profile.m_ProfileName === "CI"
+  (profile) =>
+    profile.m_ProfileName === (process.env.UNITY_ADDRESSABLE_PROFILE || "CI")
 )[0];
 
-// Find the profile variable name for RemoteLoadPath
+// Find the profile variable name for RemoteLoadPath and RemoteBuildPath
 const remoteLoadPathVar = addressableAssetSettings.MonoBehaviour.m_ProfileSettings.m_ProfileEntryNames.filter(
   (profile) => profile.m_Name === "RemoteLoadPath"
+)[0];
+const remoteBuildPathVar = addressableAssetSettings.MonoBehaviour.m_ProfileSettings.m_ProfileEntryNames.filter(
+  (profile) => profile.m_Name === "RemoteBuildPath"
 )[0];
 
 // Retrieve the RemoteLoadPath variable inside ciProfile
@@ -35,8 +39,15 @@ const remoteLoadPath = ciProfile.m_Values.filter(
   (variable) => variable.m_Id === remoteLoadPathVar.m_Id
 )[0];
 remoteLoadPath.m_Value =
-  process.env.ADDRESSABLE_REMOTE_LOAD_PATH || remoteLoadPath.m_Value;
+  process.env.UNITY_ADDRESSABLE_REMOTE_LOAD_PATH || remoteLoadPath.m_Value;
 
+const remoteBuildPath = ciProfile.m_Value.filter(
+  (variable) => variable.m_Id === remoteBuildPathVar.m_Id
+)[0];
+remoteBuildPath.m_Value =
+  process.env.UNITY_ADDRESSABLE_REMOTE_BUILD_PATH || remoteBuildPath.m_Value;
+
+// Write the settings back to file
 fs.writeFileSync(
   path.join(
     process.env.PROJECT_PATH,
