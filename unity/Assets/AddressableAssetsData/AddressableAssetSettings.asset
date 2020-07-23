@@ -46,15 +46,9 @@ MonoBehaviour:
         m_Value: ServerData/Local
       - m_Id: 53c6ce7fbcde14369a3156b2a6815614
         m_Value: https://[PrivateIpAddress]:[HostingServicePort]
-      - m_Id: c6527e52800174db1b344653d1803bb2
-        m_Value: 
-      - m_Id: cb17138bf22c6452db775dfd82711196
-        m_Value: 
-      - m_Id: e1d5ca2898835437bb865d053cbb9127
-        m_Value: 
     - m_InheritedParent: 
-      m_Id: 5d9149e29a07243f1aca0ec441836da6
-      m_ProfileName: master
+      m_Id: 1a427eff955a141c085d855f96e1c673
+      m_ProfileName: CI
       m_Values:
       - m_Id: 5043cd25fb8f34ac3a24103c5e0c8e76
         m_Value: '[UnityEditor.EditorUserBuildSettings.activeBuildTarget]'
@@ -63,55 +57,9 @@ MonoBehaviour:
       - m_Id: d1dfed9942c924776b958a672bad932b
         m_Value: '{UnityEngine.AddressableAssets.Addressables.RuntimePath}/[BuildTarget]'
       - m_Id: 98f7421501f4e40c696755a991a9d15a
-        m_Value: ServerData/[Version]/[BuildTarget]
+        m_Value: ServerData
       - m_Id: 53c6ce7fbcde14369a3156b2a6815614
-        m_Value: '[ServerPrefix]/[Version]/[BuildTarget]'
-      - m_Id: c6527e52800174db1b344653d1803bb2
-        m_Value: https://jumpjumpbox-assets-[Environment].s3-ap-southeast-1.amazonaws.com
-      - m_Id: cb17138bf22c6452db775dfd82711196
-        m_Value: master
-      - m_Id: e1d5ca2898835437bb865d053cbb9127
-        m_Value: v[UnityEngine.Application.version]
-    - m_InheritedParent: 
-      m_Id: c1d3adc20ab9644409234d3d93eb6b27
-      m_ProfileName: staging
-      m_Values:
-      - m_Id: 5043cd25fb8f34ac3a24103c5e0c8e76
-        m_Value: '[UnityEditor.EditorUserBuildSettings.activeBuildTarget]'
-      - m_Id: 28f6173b2c57448d58e00486850ef198
-        m_Value: '[UnityEngine.AddressableAssets.Addressables.BuildPath]/[BuildTarget]'
-      - m_Id: d1dfed9942c924776b958a672bad932b
-        m_Value: '{UnityEngine.AddressableAssets.Addressables.RuntimePath}/[BuildTarget]'
-      - m_Id: 98f7421501f4e40c696755a991a9d15a
-        m_Value: ServerData/[Version]/[BuildTarget]
-      - m_Id: 53c6ce7fbcde14369a3156b2a6815614
-        m_Value: '[ServerPrefix]/[Version]/[BuildTarget]'
-      - m_Id: c6527e52800174db1b344653d1803bb2
-        m_Value: https://jumpjumpbox-assets-[Environment].s3-ap-southeast-1.amazonaws.com
-      - m_Id: cb17138bf22c6452db775dfd82711196
-        m_Value: staging
-      - m_Id: e1d5ca2898835437bb865d053cbb9127
-        m_Value: v[UnityEngine.Application.version]
-    - m_InheritedParent: 
-      m_Id: 80fffa55ada854786b4ef850e9ea2eaa
-      m_ProfileName: production
-      m_Values:
-      - m_Id: 5043cd25fb8f34ac3a24103c5e0c8e76
-        m_Value: '[UnityEditor.EditorUserBuildSettings.activeBuildTarget]'
-      - m_Id: 28f6173b2c57448d58e00486850ef198
-        m_Value: '[UnityEngine.AddressableAssets.Addressables.BuildPath]/[BuildTarget]'
-      - m_Id: d1dfed9942c924776b958a672bad932b
-        m_Value: '{UnityEngine.AddressableAssets.Addressables.RuntimePath}/[BuildTarget]'
-      - m_Id: 98f7421501f4e40c696755a991a9d15a
-        m_Value: ServerData/[Version]/[BuildTarget]
-      - m_Id: 53c6ce7fbcde14369a3156b2a6815614
-        m_Value: '[ServerPrefix]/[Version]/[BuildTarget]'
-      - m_Id: c6527e52800174db1b344653d1803bb2
-        m_Value: https://jumpjumpbox-assets-[Environment].s3-ap-southeast-1.amazonaws.com
-      - m_Id: cb17138bf22c6452db775dfd82711196
-        m_Value: production
-      - m_Id: e1d5ca2898835437bb865d053cbb9127
-        m_Value: v[UnityEngine.Application.version]
+        m_Value: <fill in by CI server>
     m_ProfileEntryNames:
     - m_Id: 5043cd25fb8f34ac3a24103c5e0c8e76
       m_Name: BuildTarget
@@ -127,15 +75,6 @@ MonoBehaviour:
       m_InlineUsage: 0
     - m_Id: 53c6ce7fbcde14369a3156b2a6815614
       m_Name: RemoteLoadPath
-      m_InlineUsage: 0
-    - m_Id: c6527e52800174db1b344653d1803bb2
-      m_Name: ServerPrefix
-      m_InlineUsage: 0
-    - m_Id: cb17138bf22c6452db775dfd82711196
-      m_Name: Environment
-      m_InlineUsage: 0
-    - m_Id: e1d5ca2898835437bb865d053cbb9127
-      m_Name: Version
       m_InlineUsage: 0
     m_ProfileVersion: 1
   m_LabelTable:
