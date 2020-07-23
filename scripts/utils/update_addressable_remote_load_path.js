@@ -41,7 +41,7 @@ const remoteLoadPath = ciProfile.m_Values.filter(
 remoteLoadPath.m_Value =
   process.env.UNITY_ADDRESSABLE_REMOTE_LOAD_PATH || remoteLoadPath.m_Value;
 
-const remoteBuildPath = ciProfile.m_Value.filter(
+const remoteBuildPath = ciProfile.m_Values.filter(
   (variable) => variable.m_Id === remoteBuildPathVar.m_Id
 )[0];
 remoteBuildPath.m_Value =
